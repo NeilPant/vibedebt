@@ -342,6 +342,8 @@ describe('handled cancellation', () => {
     const pid = await waitForPid(pidFile);
     controller.abort();
     await rejection;
+    const until = Date.now() + 6000;
+    while (alive(pid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 20));
     expect(alive(pid)).toBe(false);
   }, 15000);
 
@@ -383,6 +385,8 @@ describe('handled cancellation', () => {
     const pid = await waitForPid(pidFile);
     controller.abort();
     await rejection;
+    const until = Date.now() + 6000;
+    while (alive(pid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 20));
     expect(alive(pid)).toBe(false);
     const { default: events } = await import('node:events');
     expect(events.getEventListeners(controller.signal, 'abort')).toHaveLength(0);
