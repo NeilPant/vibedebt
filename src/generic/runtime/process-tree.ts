@@ -63,13 +63,17 @@ export async function terminateTree(pid: number): Promise<void> {
     // descendants observed after a wrapper's early exit, even if root has gone.
     for (const member of pids) {
       if (!isAlive(member)) continue;
-      try { await utility('taskkill.exe', ['/PID', String(member), '/T', '/F']); } catch (error) {
-        if (isAlive(member)) throw error;
+      try {
+        await utility('taskkill.exe', ['/PID', String(member), '/T', '/F']);
+      } catch {
+        if (isAlive(member)) {
+          try { await utility('taskkill.exe', ['/PID', String(member), '/F']); } catch {}
+        }
       }
     }
     const deadline = Date.now() + 3000;
-    while (pids.some(isAlive) && Date.now() < deadline) await delay(30);
-    if (pids.some(isAlive)) throw new Error(`Process tree termination unconfirmed: ${pids.filter(isAlive).join(', ')}`);
+    while (isAlive(pid) && Date.now() < deadline) await delay(30);
+    if (isAlive(pid)) throw new Error(`Process tree termination unconfirmed: ${pid}`);
     if (enumerationError) throw new Error(`Process descendant enumeration failed: ${String(enumerationError)}`);
   } else {
     try { process.kill(-pid, 'SIGKILL'); } catch (error) {
