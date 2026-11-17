@@ -5,7 +5,8 @@ export function isAlive(pid: number): boolean {
   try {
     process.kill(pid, 0);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ESRCH') return false;
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === 'ESRCH' || (process.platform === 'win32' && code === 'EPERM')) return false;
     throw error;
   }
   if (process.platform === 'linux') {

@@ -9,7 +9,7 @@ async function boundedClose(browser: Browser): Promise<void> {
     await Promise.race([
       browser.close({ reason: 'Browser execution finished or canceled' }),
       new Promise<never>((_resolve, reject) => {
-        timer = setTimeout(() => reject(new Error('Browser cleanup deadline exceeded (5000ms)')), 5000);
+        timer = setTimeout(() => reject(new Error('Browser cleanup deadline exceeded (20000ms)')), 20000);
       }),
     ]);
   } finally { if (timer) clearTimeout(timer); }
