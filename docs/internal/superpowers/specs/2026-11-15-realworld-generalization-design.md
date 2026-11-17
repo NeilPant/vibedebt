@@ -261,7 +261,7 @@ Builder check: a fresh independent software-engineering reviewer read this draft
 
 ## Primary sources and local references
 
-Implementation evidence: [acceptance report](../../../outputs/realworld/acceptance-report.md).
+Implementation evidence: [acceptance report](../../../docs/benchmark-artifacts/realworld/acceptance-report.md).
 Final engine regression: 136 tests, 135 passed, zero failed, one POSIX-only mode test skipped on Windows. Both actual RealWorld runs passed again after the review fixes; clean anchors 6/6, type-correct mutation rejected by four journeys, byte restoration verified, restored replay 6/6.
 
 Final review clarifications: manifests expose boundary.sourceRoots, boundary.tsconfig and boundary.excludedPaths. Analysis and snapshots share root-relative output exclusions and any-depth dependency/cache exclusions; legitimate src/build sources remain admitted. Saved snapshots persist their scope, and old snapshots retain their original policy. Generic Git checkpoints reject inherited ancestor repositories and use captured owned blobs exclusively. Incomplete final inventories and any file differing from preview.after prevent acceptance. Recovery-only manifest validation permits missing source/config paths while retaining target/path safety checks.

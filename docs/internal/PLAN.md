@@ -128,7 +128,7 @@ not dispatched remotely. No review findings remain deferred.
   Fixture reset after suite and matched pristine. Chromium CI setup configured;
   remote workflow not dispatched.
 
-Evidence: outputs/realworld/acceptance-report.md, acceptance.json, engine-tests.json.
+Evidence: docs/benchmark-artifacts/realworld/acceptance-report.md, acceptance.json, engine-tests.json.
 The baseline includes exactly the approved register-import-case.patch before
 capture; it is not counted as an authorization extraction change. Results establish
 exercised frontend behavior preservation, not semantic equivalence or backend security.
@@ -149,6 +149,6 @@ Typecheck/build pass. Full regression: 18 suites, 139 passed, zero failed,
 one POSIX-only test skipped on Windows (140 total). Fixture reset before/after;
 all eight fixture files match pristine by SHA-256. All 58 source modules remain
 under 250 lines with zero AnyKeyword nodes. Evidence:
-outputs/realworld/cancellation-engine-tests.json and cancellation-review.diff.
+docs/benchmark-artifacts/realworld/cancellation-engine-tests.json and cancellation-review.diff.
 The previously completed actual RealWorld acceptance report was not rerun or
 rewritten for this focused engine fix.

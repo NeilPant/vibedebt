@@ -1,7 +1,7 @@
 {
   "name": "vibedebt",
   "version": "0.1.0",
-  "description": "Intent-to-Architecture refactoring engine for vibe-coded JavaScript/TypeScript projects",
+  "description": "Safety net for AI refactors: freeze behavior with generated tests, extract clean modules from vibe-coded JS/TS, auto-rollback on any failure",
   "license": "MIT",
   "homepage": "https://github.com/tamilselvan04200803-max/vibedebt#readme",
   "repository": {
@@ -32,7 +32,16 @@
   "bin": {
     "vibedebt": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "bin",
+    "assets/mermaid.min.js",
+    "assets/mermaid.LICENSE",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "prepublishOnly": "npm run build && npm test",
     "build": "tsc -p tsconfig.build.json",
     "demo": "node scripts/demo.js",
     "start": "node scripts/serve-dashboard.js",
