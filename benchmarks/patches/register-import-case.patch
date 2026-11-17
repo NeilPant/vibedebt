@@ -1,0 +1,13 @@
+diff --git a/src/app/App.tsx b/src/app/App.tsx
+index f0e7e4f..c1f22f3 100644
+--- a/src/app/App.tsx
++++ b/src/app/App.tsx
+@@ -12,7 +12,7 @@ import { Article, CreateArticle } from './article';
+ import { Home } from './home';
+ import { Feed } from './home/Feed';
+ import { Login } from './login';
+-import { Register } from './register';
++import { Register } from './Register';
+ import { Settings } from './settings';
+ 
+ const Profile = (

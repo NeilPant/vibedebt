@@ -1,0 +1,405 @@
+{
+  "revision": "28e1e43fdfcaa8d10baad6212d34f815dcbb1bba",
+  "baseline": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\realworld-28e1e43-baseline",
+  "runDir": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\acceptance-WvCxg8",
+  "success": true,
+  "admissionPatch": {
+    "path": "C:\\Users\\tamil\\Downloads\\Vibe debut\\benchmarks\\patches\\register-import-case.patch",
+    "sha256": "cdfa4bec26fc18a92da10127f7377002df750f87bed6ad866b3fd7b2e9cd649e",
+    "approved": true
+  },
+  "compatibility": {
+    "typescript": "4.5.4",
+    "react-hook-form": "7.22.5",
+    "@types/node": "16.11.26",
+    "@types/babel__traverse": "7.17.1"
+  },
+  "anchorHash": "7229f1f8b59851714644d3fab67851183ebc389dabd52552ed1e391e94a1e79e",
+  "bundleHash": "c593b61fd9e18d3a773f7dcc2f565d4c3533a2829e3ab8704661cf7ab192f975",
+  "clean": {
+    "success": true,
+    "rolledBack": false,
+    "baseline": {
+      "success": true,
+      "checks": [
+        {
+          "label": "typecheck",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev tscheck\n> tsc --noEmit\n\n",
+          "timedOut": false
+        },
+        {
+          "label": "build",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev build\n> tsc && vite build\n\nvite v2.9.18 building for production...\ntransforming...\n✓ 590 modules transformed.\nrendering chunks...\ndist/index.html           0.89 KiB\ndist/index.414deca9.js    369.51 KiB\ndist/index.d0934434.js    1.96 KiB\ndist/index.fe805fc0.css   4.41 KiB\n",
+          "timedOut": false
+        },
+        {
+          "label": "tests",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev test:r\n> node node_modules/jest/bin/jest --runInBand --verbose\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:26:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:37:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\nPASS src/app/App.spec.tsx\n  √ renders app component (221 ms)\n  √ renders all app html (28 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        4.431 s, estimated 6 s\nRan all test suites.\n",
+          "timedOut": false
+        }
+      ],
+      "browser": {
+        "success": true,
+        "passed": 6,
+        "failed": 0,
+        "failures": []
+      }
+    },
+    "snapshotFile": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\acceptance-WvCxg8\\clean-artifacts\\70dcab01-3395-4c5d-bb1f-05df3a89b73e\\snapshot\\snapshot.json",
+    "plan": {
+      "root": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\acceptance-WvCxg8\\clean",
+      "changes": [
+        {
+          "file": "src/api/user.service.ts",
+          "before": "import type { Interface } from '@libs/application';\r\nimport { Profile } from '@libs/application/profile';\r\nimport type { User, UserSettingsInput } from '@libs/application/user';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\r\n\r\nexport class UserService implements Interface.UserService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\r\n  };\r\n  constructor(\r\n    private readonly config = inject<AppConfig>('config'),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly sessionService = inject<Interface.SessionService>(\r\n      'sessionservice',\r\n    ),\r\n  ) {}\r\n\r\n  async register(user: {\r\n    username: string;\r\n    password: string;\r\n    email: string;\r\n  }): Promise<void> {\r\n    const url = `${this.config.apiBase}/users`;\r\n    const result = await this.http.post(url, { json: { user } }).json<{ user: User }>();\r\n    this.sessionService.update(result.user.token);\r\n  }\r\n\r\n  isLoggedIn(): boolean {\r\n    return this.sessionService.isLoggedIn();\r\n  }\r\n\r\n  async getCurrentUser() {\r\n    const result = await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/user`)\r\n      .json<{ user: User }>();\r\n    return result.user;\r\n  }\r\n\r\n  async updateCurrentUser(user: UserSettingsInput) {\r\n    return this.http\r\n      .extend(this.authorization())\r\n      .extend({\r\n        hooks: {\r\n          afterResponse: [\r\n            async (_request, _options, response) => {\r\n              if (!response.ok) {\r\n                const code = response.status;\r\n                const { errors } = await response.json();\r\n                return Promise.reject({ code, errors });\r\n              }\r\n            },\r\n          ],\r\n        },\r\n      })\r\n      .put(`${this.config.apiBase}/user`, { json: { user } })\r\n      .json<{ user: User }>()\r\n      .then(result => result.user);\r\n  }\r\n\r\n  async getProfile(name: string) {\r\n    const result = await this.http\r\n      .get(`${this.config.apiBase}/profiles/${name}`)\r\n      .json<{ profile: Profile }>();\r\n    return result.profile;\r\n  }\r\n}\r\n",
+          "after": "import type { Interface } from '@libs/application';\r\nimport { Profile } from '@libs/application/profile';\r\nimport type { User, UserSettingsInput } from '@libs/application/user';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\nimport { authorizationOptions } from \"./authorization-options\";\n\nexport class UserService implements Interface.UserService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return authorizationOptions(token);\r\n  };\r\n  constructor(\r\n    private readonly config = inject<AppConfig>('config'),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly sessionService = inject<Interface.SessionService>(\r\n      'sessionservice',\r\n    ),\r\n  ) {}\r\n\r\n  async register(user: {\r\n    username: string;\r\n    password: string;\r\n    email: string;\r\n  }): Promise<void> {\r\n    const url = `${this.config.apiBase}/users`;\r\n    const result = await this.http.post(url, { json: { user } }).json<{ user: User }>();\r\n    this.sessionService.update(result.user.token);\r\n  }\r\n\r\n  isLoggedIn(): boolean {\r\n    return this.sessionService.isLoggedIn();\r\n  }\r\n\r\n  async getCurrentUser() {\r\n    const result = await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/user`)\r\n      .json<{ user: User }>();\r\n    return result.user;\r\n  }\r\n\r\n  async updateCurrentUser(user: UserSettingsInput) {\r\n    return this.http\r\n      .extend(this.authorization())\r\n      .extend({\r\n        hooks: {\r\n          afterResponse: [\r\n            async (_request, _options, response) => {\r\n              if (!response.ok) {\r\n                const code = response.status;\r\n                const { errors } = await response.json();\r\n                return Promise.reject({ code, errors });\r\n              }\r\n            },\r\n          ],\r\n        },\r\n      })\r\n      .put(`${this.config.apiBase}/user`, { json: { user } })\r\n      .json<{ user: User }>()\r\n      .then(result => result.user);\r\n  }\r\n\r\n  async getProfile(name: string) {\r\n    const result = await this.http\r\n      .get(`${this.config.apiBase}/profiles/${name}`)\r\n      .json<{ profile: Profile }>();\r\n    return result.profile;\r\n  }\r\n}\r\n"
+        },
+        {
+          "file": "src/api/article.service.ts",
+          "before": "import type { Interface } from '@libs/application';\r\nimport {\r\n  Article,\r\n  ArticleCreateInput,\r\n  ArticleEnvelope,\r\n  ArticleFindManyArgs,\r\n  ArticleList,\r\n} from '@libs/application/article';\r\nimport { Tag } from '@libs/application/tag';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\r\n\r\nexport class ArticleService implements Interface.ArticleService, Interface.TagService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\r\n  };\r\n\r\n  constructor(\r\n    private readonly sessionService: Interface.SessionService = inject(\r\n      'sessionservice',\r\n    ),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly config: AppConfig = inject('config'),\r\n  ) {}\r\n\r\n  async create(article: ArticleCreateInput): Promise<Article> {\r\n    const url = `${this.config.apiBase}/articles`;\r\n    const articleEnvelope = await this.http\r\n      .extend(this.authorization())\r\n      .post(url, { json: { article } })\r\n      .json<ArticleEnvelope<Article>>();\r\n    return articleEnvelope.article;\r\n  }\r\n\r\n  async findOne(slug: string): Promise<Article> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/articles/${slug}`)\r\n      .json<ArticleEnvelope<Article>>();\r\n    return envelope.article;\r\n  }\r\n\r\n  update(data: any): Promise<Article> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  delete(data: any): Promise<void> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  async findMany(args: ArticleFindManyArgs = {}): Promise<ArticleList> {\r\n    const searchParams = {\r\n      limit: args.take ?? 5,\r\n      skip: args.skip ?? 0,\r\n      ...(args.author && { author: args.author }),\r\n    };\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles`, { searchParams })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async favorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .post(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async unfavorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .delete(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async feed(args: ArticleFindManyArgs): Promise<ArticleList> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles/feed`, {\r\n        searchParams: {\r\n          limit: args.take ?? 5,\r\n          skip: args.skip ?? 0,\r\n        },\r\n      })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async getAllTags(): Promise<Tag[]> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/tags`)\r\n      .json<{ tags: Tag[] }>();\r\n    return envelope.tags;\r\n  }\r\n}\r\n",
+          "after": "import type { Interface } from '@libs/application';\r\nimport {\r\n  Article,\r\n  ArticleCreateInput,\r\n  ArticleEnvelope,\r\n  ArticleFindManyArgs,\r\n  ArticleList,\r\n} from '@libs/application/article';\r\nimport { Tag } from '@libs/application/tag';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\nimport { authorizationOptions } from \"./authorization-options\";\n\nexport class ArticleService implements Interface.ArticleService, Interface.TagService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return authorizationOptions(token);\r\n  };\r\n\r\n  constructor(\r\n    private readonly sessionService: Interface.SessionService = inject(\r\n      'sessionservice',\r\n    ),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly config: AppConfig = inject('config'),\r\n  ) {}\r\n\r\n  async create(article: ArticleCreateInput): Promise<Article> {\r\n    const url = `${this.config.apiBase}/articles`;\r\n    const articleEnvelope = await this.http\r\n      .extend(this.authorization())\r\n      .post(url, { json: { article } })\r\n      .json<ArticleEnvelope<Article>>();\r\n    return articleEnvelope.article;\r\n  }\r\n\r\n  async findOne(slug: string): Promise<Article> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/articles/${slug}`)\r\n      .json<ArticleEnvelope<Article>>();\r\n    return envelope.article;\r\n  }\r\n\r\n  update(data: any): Promise<Article> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  delete(data: any): Promise<void> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  async findMany(args: ArticleFindManyArgs = {}): Promise<ArticleList> {\r\n    const searchParams = {\r\n      limit: args.take ?? 5,\r\n      skip: args.skip ?? 0,\r\n      ...(args.author && { author: args.author }),\r\n    };\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles`, { searchParams })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async favorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .post(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async unfavorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .delete(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async feed(args: ArticleFindManyArgs): Promise<ArticleList> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles/feed`, {\r\n        searchParams: {\r\n          limit: args.take ?? 5,\r\n          skip: args.skip ?? 0,\r\n        },\r\n      })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async getAllTags(): Promise<Tag[]> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/tags`)\r\n      .json<{ tags: Tag[] }>();\r\n    return envelope.tags;\r\n  }\r\n}\r\n"
+        },
+        {
+          "file": "src/api/authorization-options.ts",
+          "before": null,
+          "after": "export function authorizationOptions(token: string | undefined) {\n  return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\n}\n"
+        }
+      ],
+      "sourceHashes": {
+        "src/api/article.service.ts": "f6df1bbcd7e6af891e2a07c4d5bb01d53df3966512c224a638b50778817cb308",
+        "src/api/config.ts": "f0580bb7c2569419a97f2361e60abb7530318292dd6d3dce1d95bb1fad171968",
+        "src/api/index.ts": "b3ff3433bd5466428743abdefe580ecc50ae72ab456000ca41bef91cbe0dc55b",
+        "src/api/session.service.ts": "0d734f0781d6b7ce886687107fc59efea7feb410183d17e347ce8bf8b7e9e086",
+        "src/api/types.ts": "d1044424a1425f80359cd844026b580758d946f838ce1bcd2761f8ed94e45e4d",
+        "src/api/user.service.ts": "abfbed88b9c6b9cbefde32d8aaee293b9cfe2023e8e545a1fbbed9258889eae4",
+        "src/app/App.spec.tsx": "ec8cf9363a47240f29bdf1082931fa86bcc4fc692b5ca9a75aae53e836fec1a1",
+        "src/app/App.tsx": "f5da375e983dc386da20a57097133076a9d921dc83c9c5f064640f148cab74b6",
+        "src/app/AppErrorBoundary.tsx": "16f841c164d242bef46f04e29073f46f11a6a814436b02abea8814564b9641f2",
+        "src/app/article/Article/Article.tsx": "299d3d7471566b19b91bc7b9e8c77f14c6b5f2c89cd967ddce724eea63b9902d",
+        "src/app/article/Article/ArticlePreview.tsx": "ac12ed229abe910db02582e1c71b4e603935f265e68d6af7e74fbc192ac5a37c",
+        "src/app/article/Article/ArticleView.tsx": "5d42bea47f871e4b7bf9547ead50509039828cab8ab6c741865331b35d00fe97",
+        "src/app/article/Article/index.ts": "da785c7794428f3cef01f29bb00d3507cad647b299ee0de002099573dfd6c4da",
+        "src/app/article/Article/use-toggle-favorite-article.hook.ts": "a033ad7eef86abdcee980d45be11cf6a8ce590f80b245f54cce23c30d0a76a0d",
+        "src/app/article/CreateArticle/CreateArticle.tsx": "502e2402789ee5861b5db1cbeabca52fd2fdb066a72462f107c26674eee4062e",
+        "src/app/article/CreateArticle/CreateArticleView.tsx": "3ae015dd8261703f5709930f097eec6cd68c72735fb0056ef7c0e9a5d087fed7",
+        "src/app/article/CreateArticle/index.ts": "56b8bdab42e2ce7150d8ec576aab587e8423e3bcdf53a08530b134e8b43bbeb7",
+        "src/app/article/index.ts": "88ff4fd5a40057031d02e4d48a3831ad693e34e99e42eae5849132b1a8c6eb78",
+        "src/app/home/Feed.tsx": "b2fc2341456b1f89b1c4b187f15e0deba55eba430fe341ecd233bc7251209e01",
+        "src/app/home/Home.tsx": "1de786ad16dd75ff6f7f5625bdebbcf2c04cc6ffe62b4686eba3cdc082ca7ebc",
+        "src/app/home/HomeView.tsx": "d9a9bce184deeaea42d862db119778175b102493a8bf24798d3a5c58cb8fb3c0",
+        "src/app/home/index.ts": "06ab602da6ea3655b49dfc1bdccb8707d10c80411ad55d9c0fc306990675f086",
+        "src/app/home/PopularTags.tsx": "681658c5d6e834a10acc24f626d1b5d9b4807cd977cfc57c406453cea041b1c9",
+        "src/app/index.tsx": "1be5ffa397f2eb1206b8c37f6a908654767df9687dcf4fc2b740b58546a15ddd",
+        "src/app/login/index.ts": "2044a125013c94564dd793d8a789941141c6a1126f82bcdcc2093f210855b244",
+        "src/app/login/Login.tsx": "e90fe2ddb33f12fea7c697ff572194456f5847653050ea3e099f876f06d89738",
+        "src/app/login/types/index.ts": "1f822d07f26a852c1d2d2b0924107174904670e1bce5d63cb24bd1319975542b",
+        "src/app/login/types/login-form-data.ts": "282c29d465a1797bcec7993d529dd69ab1fd18de94023301e5d83a529c4a9696",
+        "src/app/profile/index.ts": "df108f7889642417a39b5a4ab81d4ced2aebe82ffcf49ba12479f44881e861ad",
+        "src/app/profile/Profile.tsx": "87c68c37c09c8d8a8e28943ee0b0a9ba3997d1066e8d30c63ac832cc3c21c509",
+        "src/app/Register/index.ts": "61e7682b3d080990010373afacb1cfe51e25c823d325e9ad0f9642987da616b1",
+        "src/app/Register/Register.tsx": "c1c66a851e8f7c353042152e9be7078361779b84773e61fd99e8ec3c19809dff",
+        "src/app/Register/RegisterView.tsx": "2249460c2f8000112837af6a8b342e9f2fa7f4e4e97e7f2f26f441d7a0196ac0",
+        "src/app/settings/index.ts": "b1f75a29e0f7ad015eb0fad38f89025ff25d57c05634a875e9206e542424569f",
+        "src/app/settings/Settings.tsx": "550b8d11646904ff6599468ba598c06e321575a138372109c78ee4846cd46e87",
+        "src/app/settings/SettingsView.tsx": "9bd89e8f627d82c40ab7b7df9dcac3658b87d20d16fc601a6adb9e2bb2bbd8fb",
+        "src/application/article/article-create-envelope.ts": "605f80c838a64015e3886796ddf5443cc5ddffd8ac3d9d1388c13be03a67855e",
+        "src/application/article/article-create-input.ts": "e274c37849c6e28ce46c8b70dc74f2b62f0e090337f74e55f57de3bd140628d7",
+        "src/application/article/article-envelope.ts": "fa124718bb4359f5b3a3e9394103fb5ce8609efd5cfc1d5b9cf73a1f975c21b7",
+        "src/application/article/article-find-many-args.ts": "30d59fb16ecea8632af1f93376b373b663c58d7b91250f3eddd04b077118d44e",
+        "src/application/article/article-list.ts": "25c1d460b73f221613eb861870b7fc4c107476b7a9b41deb7930f1f011fbf5c0",
+        "src/application/article/article-where-input.ts": "9debe13e3ac0ac5a55e2689025976b424936b4d9b137f2b19a0135f3ce8052fc",
+        "src/application/article/article.ts": "d3004d57a2419e7a0fd88d87fb203ff7b1e4e38dbc3cfde38c20d4e834e20693",
+        "src/application/article/commands/article-create.command.ts": "f691c5dc8136ba3881db094f0a8826f3a74becae0c19ec52b63f6f1dfb8a35d1",
+        "src/application/article/commands/index.ts": "4d16d8fc483db00fd1785b571edd241e4761c53ab87cd67c508510290ab529e0",
+        "src/application/article/index.ts": "e93cc8527af91a21d30fa1645e9ce705a93f40e42a73ccab661567b956910865",
+        "src/application/article/queries/article-feed.handler.ts": "e44a01a366f9d36917b3f2a73d84a196035c8357eab3506cb1a741b26de2c499",
+        "src/application/article/queries/article-list.handler.ts": "7e132c2e9badd3e2aa2ec3f122291168c1fbc21965067f5d1951a7992c97cb3b",
+        "src/application/article/queries/article-list.query.ts": "4efb81729cc1be9d0cbe503c2f303a3d7c36c54e9f8c532703530d63c2f9d968",
+        "src/application/article/queries/index.ts": "f370c255f100360276f3267ca1ca1c1ae9122063b6c50bd0fd5f4a344632be6e",
+        "src/application/article/queries/tag-list.handler.ts": "3d526385de85e01b77be37dfcad92b4aadcb44840f62200e342fcf64fa4a326c",
+        "src/application/index.ts": "ef93efed2a5d7275f41f5d3ddf71480fa8385e6e569a45f7e58390a78c18ab58",
+        "src/application/interfaces/index.ts": "0a1258326c8e0baa1e0928d23ae8888e8afac972c7c08aa3a0f139ecb6b54a9c",
+        "src/application/profile/index.ts": "c2a39fff2c8e073962692fa929dd1038b029eb545aed154c429ecd25bf6007aa",
+        "src/application/profile/interfaces/index.ts": "3292d0281034c03845a5013707a4b24c878ed5d80b38900e419bb85351c04bc1",
+        "src/application/profile/interfaces/profile.ts": "cf6a2d4e4c25d2b40b5cf9a718a8c4c3d26120fd48e660b5ddef41e211448b2a",
+        "src/application/profile/queries/get-profile.handler.ts": "c9198c51d1e17dcbc62ff115d5137a7920eb0eb696424c65ee44738345e285fd",
+        "src/application/profile/queries/index.ts": "bb87fb641a295ada1d907ffd28c47e98c080caa8c4a81e456df27cad062650f0",
+        "src/application/tag/index.ts": "9145d2bf3fa1e6544a5e677e8c8ca506fb4a837390b84f9b2933cd89326dd47a",
+        "src/application/tag/tag.ts": "36ac9e6a2be0efcad88d2109c3ba3c4a8a6015d0a36777b325f481ddb0e2479d",
+        "src/application/user/author.ts": "a26e3a1969a57a75d770e8f7eef123050dfc7d2a0abe264edc9f2f56ec27c11f",
+        "src/application/user/commands/index.ts": "9646d734710f9b6d60dbb8623e7f96a65ef7c581809a732be5e681a438cae928",
+        "src/application/user/commands/user-register.command.ts": "4d4bca40bc45af4caeeae2f8cbc65703e58145535e45947e4626b5bb41821e5c",
+        "src/application/user/commands/user-settings-update.command.ts": "5d696c6cdf3c215b97ec116d3e5795c52ecb4b6aaf6480ebe104436b9bc00dcd",
+        "src/application/user/index.ts": "403a54ea83ab6a8141e6a758f2c2a598968074861258e7d41e0924015f05bda5",
+        "src/application/user/models/index.ts": "20b7f73c1dae885ce72426d77234c2ef70455b9245770cc28cc72fca06ee5e86",
+        "src/application/user/models/user-create-input.ts": "1ac3e69bead509405781f72aa3679e965a9f1d8148d7c93524bc1711dd5b2db3",
+        "src/application/user/models/user-login-envelope.ts": "704fea0ab7cc90c13521f191d7612a3d7789c1821e9514558538d48072d3f0e2",
+        "src/application/user/models/user-settings-input.ts": "b8f901d57d9b98a49e329d3bb382027f5a3d29d2baa838062ad89a25efe77851",
+        "src/application/user/models/user.ts": "ec7748b6b1cb58607b05f350887e9428bbbc546e26390c568c1c5eb1ed4f5590",
+        "src/application/user/queries/index.ts": "eeb42d026d796c90d80e61b39eccd8aa66b887632ceb27f5195b46a8c396a345",
+        "src/application/user/queries/user-settings.handler.ts": "998c16b185a6aabd8dad1f5835400e60aa7b1d23ab24366fe89bbad278e00e50",
+        "src/components/ArticleMeta.tsx": "436c1328167e9e8a52d1503e4c78087368dbd0f8241eef0afe476f21498fd8f6",
+        "src/components/Footer.tsx": "f1c3e2266b2e13ef2fdf299037f17688a928262c189e68777cbc65968dc2ef52",
+        "src/components/index.ts": "7e6f0586d32b8e657486ee8c0c80d6545cdeb2bad53e1000f67bf402be4343f5",
+        "src/components/Loader.tsx": "3f1e994bf7c7308a5b70b5e9518f30d43a61d26f731fe3af40ce65560b8ecef5",
+        "src/components/Navbar.tsx": "d088d1d9834a682f88547d16aa7e3d63e6a3ee19f0d44e58cd9f6e9f1e413a9f",
+        "src/components/NavItem.tsx": "80c1adf966bd7008e15151bbfcd72d42a83305db43e48ea913902910f4d58963",
+        "src/components/Pagination.tsx": "1ab21330290e40ff45e60469ac663e34a0b2444c3de137e03470625c583919a5",
+        "src/main.tsx": "628c1961d8c340cce7c47836a307ce8bab64e140220ed864cc36db7656d9d8f9",
+        "tsconfig.json": "e4d1b76ccf94c5e5497a833c80df2060a25c82894ff2fc8372aa2270beaaa9b4",
+        "package.json": "9f28b496c5dec542561fd905308fa1e164490806472de521c6a1d7a437abaf20"
+      },
+      "noop": false,
+      "boundary": {
+        "sourceRoots": [
+          "src"
+        ],
+        "tsconfig": "tsconfig.json",
+        "excludedPaths": []
+      },
+      "configurationAbsent": false
+    },
+    "checkpoint": {
+      "ref": "refs/vibedebt/checkpoints/aa623a13-91c9-47bf-9964-e55dfb5e2489",
+      "commit": "d22873fca339f274a5f5198c9be2d826d1a52d87"
+    },
+    "verification": {
+      "success": true,
+      "checks": [
+        {
+          "label": "typecheck",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev tscheck\n> tsc --noEmit\n\n",
+          "timedOut": false
+        },
+        {
+          "label": "build",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev build\n> tsc && vite build\n\nvite v2.9.18 building for production...\ntransforming...\n✓ 591 modules transformed.\nrendering chunks...\ndist/index.html           0.89 KiB\ndist/index.f5859c6c.js    369.50 KiB\ndist/index.8c87ef3f.js    1.96 KiB\ndist/index.fe805fc0.css   4.41 KiB\n",
+          "timedOut": false
+        },
+        {
+          "label": "tests",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev test:r\n> node node_modules/jest/bin/jest --runInBand --verbose\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:26:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:37:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\nPASS src/app/App.spec.tsx\n  √ renders app component (251 ms)\n  √ renders all app html (31 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        4.602 s\nRan all test suites.\n",
+          "timedOut": false
+        }
+      ],
+      "browser": {
+        "success": true,
+        "passed": 6,
+        "failed": 0,
+        "failures": []
+      }
+    }
+  },
+  "mutation": {
+    "success": false,
+    "rolledBack": true,
+    "baseline": {
+      "success": true,
+      "checks": [
+        {
+          "label": "typecheck",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev tscheck\n> tsc --noEmit\n\n",
+          "timedOut": false
+        },
+        {
+          "label": "build",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev build\n> tsc && vite build\n\nvite v2.9.18 building for production...\ntransforming...\n✓ 590 modules transformed.\nrendering chunks...\ndist/index.html           0.89 KiB\ndist/index.2d89354a.js    369.51 KiB\ndist/index.a19ff1fc.js    1.96 KiB\ndist/index.fe805fc0.css   4.41 KiB\n",
+          "timedOut": false
+        },
+        {
+          "label": "tests",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev test:r\n> node node_modules/jest/bin/jest --runInBand --verbose\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:26:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:37:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\nPASS src/app/App.spec.tsx (9.22 s)\n  √ renders app component (236 ms)\n  √ renders all app html (33 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        15.319 s\nRan all test suites.\n",
+          "timedOut": false
+        }
+      ],
+      "browser": {
+        "success": true,
+        "passed": 6,
+        "failed": 0,
+        "failures": []
+      }
+    },
+    "snapshotFile": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\acceptance-WvCxg8\\mutation-artifacts\\85d40573-8c93-4873-b997-6f4d62b46269\\snapshot\\snapshot.json",
+    "plan": {
+      "root": "C:\\Users\\tamil\\Downloads\\VibeDebt-benchmarks\\acceptance-WvCxg8\\mutation",
+      "changes": [
+        {
+          "file": "src/api/user.service.ts",
+          "before": "import type { Interface } from '@libs/application';\r\nimport { Profile } from '@libs/application/profile';\r\nimport type { User, UserSettingsInput } from '@libs/application/user';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\r\n\r\nexport class UserService implements Interface.UserService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\r\n  };\r\n  constructor(\r\n    private readonly config = inject<AppConfig>('config'),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly sessionService = inject<Interface.SessionService>(\r\n      'sessionservice',\r\n    ),\r\n  ) {}\r\n\r\n  async register(user: {\r\n    username: string;\r\n    password: string;\r\n    email: string;\r\n  }): Promise<void> {\r\n    const url = `${this.config.apiBase}/users`;\r\n    const result = await this.http.post(url, { json: { user } }).json<{ user: User }>();\r\n    this.sessionService.update(result.user.token);\r\n  }\r\n\r\n  isLoggedIn(): boolean {\r\n    return this.sessionService.isLoggedIn();\r\n  }\r\n\r\n  async getCurrentUser() {\r\n    const result = await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/user`)\r\n      .json<{ user: User }>();\r\n    return result.user;\r\n  }\r\n\r\n  async updateCurrentUser(user: UserSettingsInput) {\r\n    return this.http\r\n      .extend(this.authorization())\r\n      .extend({\r\n        hooks: {\r\n          afterResponse: [\r\n            async (_request, _options, response) => {\r\n              if (!response.ok) {\r\n                const code = response.status;\r\n                const { errors } = await response.json();\r\n                return Promise.reject({ code, errors });\r\n              }\r\n            },\r\n          ],\r\n        },\r\n      })\r\n      .put(`${this.config.apiBase}/user`, { json: { user } })\r\n      .json<{ user: User }>()\r\n      .then(result => result.user);\r\n  }\r\n\r\n  async getProfile(name: string) {\r\n    const result = await this.http\r\n      .get(`${this.config.apiBase}/profiles/${name}`)\r\n      .json<{ profile: Profile }>();\r\n    return result.profile;\r\n  }\r\n}\r\n",
+          "after": "import type { Interface } from '@libs/application';\r\nimport { Profile } from '@libs/application/profile';\r\nimport type { User, UserSettingsInput } from '@libs/application/user';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\nimport { authorizationOptions } from \"./authorization-options\";\n\nexport class UserService implements Interface.UserService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return authorizationOptions(token);\r\n  };\r\n  constructor(\r\n    private readonly config = inject<AppConfig>('config'),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly sessionService = inject<Interface.SessionService>(\r\n      'sessionservice',\r\n    ),\r\n  ) {}\r\n\r\n  async register(user: {\r\n    username: string;\r\n    password: string;\r\n    email: string;\r\n  }): Promise<void> {\r\n    const url = `${this.config.apiBase}/users`;\r\n    const result = await this.http.post(url, { json: { user } }).json<{ user: User }>();\r\n    this.sessionService.update(result.user.token);\r\n  }\r\n\r\n  isLoggedIn(): boolean {\r\n    return this.sessionService.isLoggedIn();\r\n  }\r\n\r\n  async getCurrentUser() {\r\n    const result = await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/user`)\r\n      .json<{ user: User }>();\r\n    return result.user;\r\n  }\r\n\r\n  async updateCurrentUser(user: UserSettingsInput) {\r\n    return this.http\r\n      .extend(this.authorization())\r\n      .extend({\r\n        hooks: {\r\n          afterResponse: [\r\n            async (_request, _options, response) => {\r\n              if (!response.ok) {\r\n                const code = response.status;\r\n                const { errors } = await response.json();\r\n                return Promise.reject({ code, errors });\r\n              }\r\n            },\r\n          ],\r\n        },\r\n      })\r\n      .put(`${this.config.apiBase}/user`, { json: { user } })\r\n      .json<{ user: User }>()\r\n      .then(result => result.user);\r\n  }\r\n\r\n  async getProfile(name: string) {\r\n    const result = await this.http\r\n      .get(`${this.config.apiBase}/profiles/${name}`)\r\n      .json<{ profile: Profile }>();\r\n    return result.profile;\r\n  }\r\n}\r\n"
+        },
+        {
+          "file": "src/api/article.service.ts",
+          "before": "import type { Interface } from '@libs/application';\r\nimport {\r\n  Article,\r\n  ArticleCreateInput,\r\n  ArticleEnvelope,\r\n  ArticleFindManyArgs,\r\n  ArticleList,\r\n} from '@libs/application/article';\r\nimport { Tag } from '@libs/application/tag';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\r\n\r\nexport class ArticleService implements Interface.ArticleService, Interface.TagService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\r\n  };\r\n\r\n  constructor(\r\n    private readonly sessionService: Interface.SessionService = inject(\r\n      'sessionservice',\r\n    ),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly config: AppConfig = inject('config'),\r\n  ) {}\r\n\r\n  async create(article: ArticleCreateInput): Promise<Article> {\r\n    const url = `${this.config.apiBase}/articles`;\r\n    const articleEnvelope = await this.http\r\n      .extend(this.authorization())\r\n      .post(url, { json: { article } })\r\n      .json<ArticleEnvelope<Article>>();\r\n    return articleEnvelope.article;\r\n  }\r\n\r\n  async findOne(slug: string): Promise<Article> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/articles/${slug}`)\r\n      .json<ArticleEnvelope<Article>>();\r\n    return envelope.article;\r\n  }\r\n\r\n  update(data: any): Promise<Article> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  delete(data: any): Promise<void> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  async findMany(args: ArticleFindManyArgs = {}): Promise<ArticleList> {\r\n    const searchParams = {\r\n      limit: args.take ?? 5,\r\n      skip: args.skip ?? 0,\r\n      ...(args.author && { author: args.author }),\r\n    };\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles`, { searchParams })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async favorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .post(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async unfavorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .delete(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async feed(args: ArticleFindManyArgs): Promise<ArticleList> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles/feed`, {\r\n        searchParams: {\r\n          limit: args.take ?? 5,\r\n          skip: args.skip ?? 0,\r\n        },\r\n      })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async getAllTags(): Promise<Tag[]> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/tags`)\r\n      .json<{ tags: Tag[] }>();\r\n    return envelope.tags;\r\n  }\r\n}\r\n",
+          "after": "import type { Interface } from '@libs/application';\r\nimport {\r\n  Article,\r\n  ArticleCreateInput,\r\n  ArticleEnvelope,\r\n  ArticleFindManyArgs,\r\n  ArticleList,\r\n} from '@libs/application/article';\r\nimport { Tag } from '@libs/application/tag';\r\nimport ky from 'ky';\r\nimport { inject } from 'njct';\r\n\r\nimport { AppConfig } from './types';\nimport { authorizationOptions } from \"./authorization-options\";\n\nexport class ArticleService implements Interface.ArticleService, Interface.TagService {\r\n  private authorization = () => {\r\n    const token = this.sessionService.getToken();\r\n    return authorizationOptions(token);\r\n  };\r\n\r\n  constructor(\r\n    private readonly sessionService: Interface.SessionService = inject(\r\n      'sessionservice',\r\n    ),\r\n    private readonly http = inject('httpclient', () => ky),\r\n    private readonly config: AppConfig = inject('config'),\r\n  ) {}\r\n\r\n  async create(article: ArticleCreateInput): Promise<Article> {\r\n    const url = `${this.config.apiBase}/articles`;\r\n    const articleEnvelope = await this.http\r\n      .extend(this.authorization())\r\n      .post(url, { json: { article } })\r\n      .json<ArticleEnvelope<Article>>();\r\n    return articleEnvelope.article;\r\n  }\r\n\r\n  async findOne(slug: string): Promise<Article> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/articles/${slug}`)\r\n      .json<ArticleEnvelope<Article>>();\r\n    return envelope.article;\r\n  }\r\n\r\n  update(data: any): Promise<Article> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  delete(data: any): Promise<void> {\r\n    throw new Error('Method not implemented.');\r\n  }\r\n\r\n  async findMany(args: ArticleFindManyArgs = {}): Promise<ArticleList> {\r\n    const searchParams = {\r\n      limit: args.take ?? 5,\r\n      skip: args.skip ?? 0,\r\n      ...(args.author && { author: args.author }),\r\n    };\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles`, { searchParams })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async favorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .post(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async unfavorite(slug: string): Promise<Article> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .delete(`${this.config.apiBase}/articles/${slug}/favorite`)\r\n      .json<ArticleEnvelope<Article>>()\r\n      .then(result => result.article);\r\n  }\r\n\r\n  async feed(args: ArticleFindManyArgs): Promise<ArticleList> {\r\n    return await this.http\r\n      .extend(this.authorization())\r\n      .get(`${this.config.apiBase}/articles/feed`, {\r\n        searchParams: {\r\n          limit: args.take ?? 5,\r\n          skip: args.skip ?? 0,\r\n        },\r\n      })\r\n      .json<ArticleList>();\r\n  }\r\n\r\n  async getAllTags(): Promise<Tag[]> {\r\n    const envelope = await this.http\r\n      .get(`${this.config.apiBase}/tags`)\r\n      .json<{ tags: Tag[] }>();\r\n    return envelope.tags;\r\n  }\r\n}\r\n"
+        },
+        {
+          "file": "src/api/authorization-options.ts",
+          "before": null,
+          "after": "export function authorizationOptions(token: string | undefined) {\n  return {\r\n      headers: {\r\n        Authorization: token ? `Token ${token}` : undefined,\r\n      },\r\n    };\n}\n"
+        }
+      ],
+      "sourceHashes": {
+        "src/api/article.service.ts": "f6df1bbcd7e6af891e2a07c4d5bb01d53df3966512c224a638b50778817cb308",
+        "src/api/config.ts": "f0580bb7c2569419a97f2361e60abb7530318292dd6d3dce1d95bb1fad171968",
+        "src/api/index.ts": "b3ff3433bd5466428743abdefe580ecc50ae72ab456000ca41bef91cbe0dc55b",
+        "src/api/session.service.ts": "0d734f0781d6b7ce886687107fc59efea7feb410183d17e347ce8bf8b7e9e086",
+        "src/api/types.ts": "d1044424a1425f80359cd844026b580758d946f838ce1bcd2761f8ed94e45e4d",
+        "src/api/user.service.ts": "abfbed88b9c6b9cbefde32d8aaee293b9cfe2023e8e545a1fbbed9258889eae4",
+        "src/app/App.spec.tsx": "ec8cf9363a47240f29bdf1082931fa86bcc4fc692b5ca9a75aae53e836fec1a1",
+        "src/app/App.tsx": "f5da375e983dc386da20a57097133076a9d921dc83c9c5f064640f148cab74b6",
+        "src/app/AppErrorBoundary.tsx": "16f841c164d242bef46f04e29073f46f11a6a814436b02abea8814564b9641f2",
+        "src/app/article/Article/Article.tsx": "299d3d7471566b19b91bc7b9e8c77f14c6b5f2c89cd967ddce724eea63b9902d",
+        "src/app/article/Article/ArticlePreview.tsx": "ac12ed229abe910db02582e1c71b4e603935f265e68d6af7e74fbc192ac5a37c",
+        "src/app/article/Article/ArticleView.tsx": "5d42bea47f871e4b7bf9547ead50509039828cab8ab6c741865331b35d00fe97",
+        "src/app/article/Article/index.ts": "da785c7794428f3cef01f29bb00d3507cad647b299ee0de002099573dfd6c4da",
+        "src/app/article/Article/use-toggle-favorite-article.hook.ts": "a033ad7eef86abdcee980d45be11cf6a8ce590f80b245f54cce23c30d0a76a0d",
+        "src/app/article/CreateArticle/CreateArticle.tsx": "502e2402789ee5861b5db1cbeabca52fd2fdb066a72462f107c26674eee4062e",
+        "src/app/article/CreateArticle/CreateArticleView.tsx": "3ae015dd8261703f5709930f097eec6cd68c72735fb0056ef7c0e9a5d087fed7",
+        "src/app/article/CreateArticle/index.ts": "56b8bdab42e2ce7150d8ec576aab587e8423e3bcdf53a08530b134e8b43bbeb7",
+        "src/app/article/index.ts": "88ff4fd5a40057031d02e4d48a3831ad693e34e99e42eae5849132b1a8c6eb78",
+        "src/app/home/Feed.tsx": "b2fc2341456b1f89b1c4b187f15e0deba55eba430fe341ecd233bc7251209e01",
+        "src/app/home/Home.tsx": "1de786ad16dd75ff6f7f5625bdebbcf2c04cc6ffe62b4686eba3cdc082ca7ebc",
+        "src/app/home/HomeView.tsx": "d9a9bce184deeaea42d862db119778175b102493a8bf24798d3a5c58cb8fb3c0",
+        "src/app/home/index.ts": "06ab602da6ea3655b49dfc1bdccb8707d10c80411ad55d9c0fc306990675f086",
+        "src/app/home/PopularTags.tsx": "681658c5d6e834a10acc24f626d1b5d9b4807cd977cfc57c406453cea041b1c9",
+        "src/app/index.tsx": "1be5ffa397f2eb1206b8c37f6a908654767df9687dcf4fc2b740b58546a15ddd",
+        "src/app/login/index.ts": "2044a125013c94564dd793d8a789941141c6a1126f82bcdcc2093f210855b244",
+        "src/app/login/Login.tsx": "e90fe2ddb33f12fea7c697ff572194456f5847653050ea3e099f876f06d89738",
+        "src/app/login/types/index.ts": "1f822d07f26a852c1d2d2b0924107174904670e1bce5d63cb24bd1319975542b",
+        "src/app/login/types/login-form-data.ts": "282c29d465a1797bcec7993d529dd69ab1fd18de94023301e5d83a529c4a9696",
+        "src/app/profile/index.ts": "df108f7889642417a39b5a4ab81d4ced2aebe82ffcf49ba12479f44881e861ad",
+        "src/app/profile/Profile.tsx": "87c68c37c09c8d8a8e28943ee0b0a9ba3997d1066e8d30c63ac832cc3c21c509",
+        "src/app/Register/index.ts": "61e7682b3d080990010373afacb1cfe51e25c823d325e9ad0f9642987da616b1",
+        "src/app/Register/Register.tsx": "c1c66a851e8f7c353042152e9be7078361779b84773e61fd99e8ec3c19809dff",
+        "src/app/Register/RegisterView.tsx": "2249460c2f8000112837af6a8b342e9f2fa7f4e4e97e7f2f26f441d7a0196ac0",
+        "src/app/settings/index.ts": "b1f75a29e0f7ad015eb0fad38f89025ff25d57c05634a875e9206e542424569f",
+        "src/app/settings/Settings.tsx": "550b8d11646904ff6599468ba598c06e321575a138372109c78ee4846cd46e87",
+        "src/app/settings/SettingsView.tsx": "9bd89e8f627d82c40ab7b7df9dcac3658b87d20d16fc601a6adb9e2bb2bbd8fb",
+        "src/application/article/article-create-envelope.ts": "605f80c838a64015e3886796ddf5443cc5ddffd8ac3d9d1388c13be03a67855e",
+        "src/application/article/article-create-input.ts": "e274c37849c6e28ce46c8b70dc74f2b62f0e090337f74e55f57de3bd140628d7",
+        "src/application/article/article-envelope.ts": "fa124718bb4359f5b3a3e9394103fb5ce8609efd5cfc1d5b9cf73a1f975c21b7",
+        "src/application/article/article-find-many-args.ts": "30d59fb16ecea8632af1f93376b373b663c58d7b91250f3eddd04b077118d44e",
+        "src/application/article/article-list.ts": "25c1d460b73f221613eb861870b7fc4c107476b7a9b41deb7930f1f011fbf5c0",
+        "src/application/article/article-where-input.ts": "9debe13e3ac0ac5a55e2689025976b424936b4d9b137f2b19a0135f3ce8052fc",
+        "src/application/article/article.ts": "d3004d57a2419e7a0fd88d87fb203ff7b1e4e38dbc3cfde38c20d4e834e20693",
+        "src/application/article/commands/article-create.command.ts": "f691c5dc8136ba3881db094f0a8826f3a74becae0c19ec52b63f6f1dfb8a35d1",
+        "src/application/article/commands/index.ts": "4d16d8fc483db00fd1785b571edd241e4761c53ab87cd67c508510290ab529e0",
+        "src/application/article/index.ts": "e93cc8527af91a21d30fa1645e9ce705a93f40e42a73ccab661567b956910865",
+        "src/application/article/queries/article-feed.handler.ts": "e44a01a366f9d36917b3f2a73d84a196035c8357eab3506cb1a741b26de2c499",
+        "src/application/article/queries/article-list.handler.ts": "7e132c2e9badd3e2aa2ec3f122291168c1fbc21965067f5d1951a7992c97cb3b",
+        "src/application/article/queries/article-list.query.ts": "4efb81729cc1be9d0cbe503c2f303a3d7c36c54e9f8c532703530d63c2f9d968",
+        "src/application/article/queries/index.ts": "f370c255f100360276f3267ca1ca1c1ae9122063b6c50bd0fd5f4a344632be6e",
+        "src/application/article/queries/tag-list.handler.ts": "3d526385de85e01b77be37dfcad92b4aadcb44840f62200e342fcf64fa4a326c",
+        "src/application/index.ts": "ef93efed2a5d7275f41f5d3ddf71480fa8385e6e569a45f7e58390a78c18ab58",
+        "src/application/interfaces/index.ts": "0a1258326c8e0baa1e0928d23ae8888e8afac972c7c08aa3a0f139ecb6b54a9c",
+        "src/application/profile/index.ts": "c2a39fff2c8e073962692fa929dd1038b029eb545aed154c429ecd25bf6007aa",
+        "src/application/profile/interfaces/index.ts": "3292d0281034c03845a5013707a4b24c878ed5d80b38900e419bb85351c04bc1",
+        "src/application/profile/interfaces/profile.ts": "cf6a2d4e4c25d2b40b5cf9a718a8c4c3d26120fd48e660b5ddef41e211448b2a",
+        "src/application/profile/queries/get-profile.handler.ts": "c9198c51d1e17dcbc62ff115d5137a7920eb0eb696424c65ee44738345e285fd",
+        "src/application/profile/queries/index.ts": "bb87fb641a295ada1d907ffd28c47e98c080caa8c4a81e456df27cad062650f0",
+        "src/application/tag/index.ts": "9145d2bf3fa1e6544a5e677e8c8ca506fb4a837390b84f9b2933cd89326dd47a",
+        "src/application/tag/tag.ts": "36ac9e6a2be0efcad88d2109c3ba3c4a8a6015d0a36777b325f481ddb0e2479d",
+        "src/application/user/author.ts": "a26e3a1969a57a75d770e8f7eef123050dfc7d2a0abe264edc9f2f56ec27c11f",
+        "src/application/user/commands/index.ts": "9646d734710f9b6d60dbb8623e7f96a65ef7c581809a732be5e681a438cae928",
+        "src/application/user/commands/user-register.command.ts": "4d4bca40bc45af4caeeae2f8cbc65703e58145535e45947e4626b5bb41821e5c",
+        "src/application/user/commands/user-settings-update.command.ts": "5d696c6cdf3c215b97ec116d3e5795c52ecb4b6aaf6480ebe104436b9bc00dcd",
+        "src/application/user/index.ts": "403a54ea83ab6a8141e6a758f2c2a598968074861258e7d41e0924015f05bda5",
+        "src/application/user/models/index.ts": "20b7f73c1dae885ce72426d77234c2ef70455b9245770cc28cc72fca06ee5e86",
+        "src/application/user/models/user-create-input.ts": "1ac3e69bead509405781f72aa3679e965a9f1d8148d7c93524bc1711dd5b2db3",
+        "src/application/user/models/user-login-envelope.ts": "704fea0ab7cc90c13521f191d7612a3d7789c1821e9514558538d48072d3f0e2",
+        "src/application/user/models/user-settings-input.ts": "b8f901d57d9b98a49e329d3bb382027f5a3d29d2baa838062ad89a25efe77851",
+        "src/application/user/models/user.ts": "ec7748b6b1cb58607b05f350887e9428bbbc546e26390c568c1c5eb1ed4f5590",
+        "src/application/user/queries/index.ts": "eeb42d026d796c90d80e61b39eccd8aa66b887632ceb27f5195b46a8c396a345",
+        "src/application/user/queries/user-settings.handler.ts": "998c16b185a6aabd8dad1f5835400e60aa7b1d23ab24366fe89bbad278e00e50",
+        "src/components/ArticleMeta.tsx": "436c1328167e9e8a52d1503e4c78087368dbd0f8241eef0afe476f21498fd8f6",
+        "src/components/Footer.tsx": "f1c3e2266b2e13ef2fdf299037f17688a928262c189e68777cbc65968dc2ef52",
+        "src/components/index.ts": "7e6f0586d32b8e657486ee8c0c80d6545cdeb2bad53e1000f67bf402be4343f5",
+        "src/components/Loader.tsx": "3f1e994bf7c7308a5b70b5e9518f30d43a61d26f731fe3af40ce65560b8ecef5",
+        "src/components/Navbar.tsx": "d088d1d9834a682f88547d16aa7e3d63e6a3ee19f0d44e58cd9f6e9f1e413a9f",
+        "src/components/NavItem.tsx": "80c1adf966bd7008e15151bbfcd72d42a83305db43e48ea913902910f4d58963",
+        "src/components/Pagination.tsx": "1ab21330290e40ff45e60469ac663e34a0b2444c3de137e03470625c583919a5",
+        "src/main.tsx": "628c1961d8c340cce7c47836a307ce8bab64e140220ed864cc36db7656d9d8f9",
+        "tsconfig.json": "e4d1b76ccf94c5e5497a833c80df2060a25c82894ff2fc8372aa2270beaaa9b4",
+        "package.json": "9f28b496c5dec542561fd905308fa1e164490806472de521c6a1d7a437abaf20"
+      },
+      "noop": false,
+      "boundary": {
+        "sourceRoots": [
+          "src"
+        ],
+        "tsconfig": "tsconfig.json",
+        "excludedPaths": []
+      },
+      "configurationAbsent": false
+    },
+    "verification": {
+      "success": false,
+      "checks": [
+        {
+          "label": "typecheck",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev tscheck\n> tsc --noEmit\n\n",
+          "timedOut": false
+        },
+        {
+          "label": "build",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev build\n> tsc && vite build\n\nvite v2.9.18 building for production...\ntransforming...\n✓ 591 modules transformed.\nrendering chunks...\ndist/index.html           0.89 KiB\ndist/index.c5fc26e8.js    369.50 KiB\ndist/index.feeaf71b.js    1.96 KiB\ndist/index.fe805fc0.css   4.41 KiB\n",
+          "timedOut": false
+        },
+        {
+          "label": "tests",
+          "code": 0,
+          "output": "\n> realworld-example-app@0.0.0-dev test:r\n> node node_modules/jest/bin/jest --runInBand --verbose\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:26:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\n  console.warn\n    ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.\n\n      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)\n      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)\n      at Object.logV6DeprecationWarnings [as UNSAFE_logV6DeprecationWarnings] (node_modules/react-router/lib/deprecations.ts:37:5)\n      at node_modules/react-router-dom/index.tsx:869:25\n      at invokePassiveEffectCreate (node_modules/react-dom/cjs/react-dom.development.js:23487:20)\n      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:3945:14)\n      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)\n\nPASS src/app/App.spec.tsx\n  √ renders app component (234 ms)\n  √ renders all app html (29 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        4.772 s, estimated 10 s\nRan all test suites.\n",
+          "timedOut": false
+        }
+      ],
+      "browser": {
+        "success": false,
+        "passed": 2,
+        "failed": 4,
+        "failures": [
+          "login-reload-settings-favorite: articles authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"",
+          "login-reload-settings-favorite: articles authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"",
+          "login-reload-settings-favorite: favorite authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"",
+          "login-reload-settings-favorite: current-user authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"",
+          "logout: current-user authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"",
+          "malformed-token: articles authorization: expected \"Token not-a-jwt\", actual \"Bearer not-a-jwt\"",
+          "expired-token: articles authorization: expected \"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\", actual \"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\"",
+          "login-reload-settings-favorite: frozen browser observations differ; expected {\"checkpoints\":[{\"id\":\"logged-in\",\"values\":[\"<app>/\",\"conduit\\nHome\\nNew Post\\nSettings\\nboundary-user\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"reloaded\",\"values\":[\"<app>/\",\"conduit\\nHome\\nNew Post\\nSettings\\nboundary-user\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"favorited\",\"values\":[\"1\"]},{\"id\":\"settings\",\"values\":[\"<app>/#/settings\",\"boundary-user\",\"boundary@example.invalid\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]}],\"id\":\"login-reload-settings-favorite\",\"requests\":[{\"body\":{\"user\":{\"email\":\"boundary@example.invalid\",\"password\":\"synthetic-password\"}},\"fixture\":\"login\",\"headers\":{\"authorization\":null},\"method\":\"POST\",\"url\":\"https://conduit.productionready.io/api/users/login\"},{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"current-user\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/user\"},{\"body\":null,\"fixture\":\"favorite\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"POST\",\"url\":\"https://conduit.productionready.io/api/articles/boundary-article/favorite\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}, actual {\"checkpoints\":[{\"id\":\"logged-in\",\"values\":[\"<app>/\",\"conduit\\nHome\\nNew Post\\nSettings\\nboundary-user\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"reloaded\",\"values\":[\"<app>/\",\"conduit\\nHome\\nNew Post\\nSettings\\nboundary-user\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"favorited\",\"values\":[\"1\"]},{\"id\":\"settings\",\"values\":[\"<app>/#/settings\",\"boundary-user\",\"boundary@example.invalid\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]}],\"id\":\"login-reload-settings-favorite\",\"requests\":[{\"body\":{\"user\":{\"email\":\"boundary@example.invalid\",\"password\":\"synthetic-password\"}},\"fixture\":\"login\",\"headers\":{\"authorization\":null},\"method\":\"POST\",\"url\":\"https://conduit.productionready.io/api/users/login\"},{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"current-user\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/user\"},{\"body\":null,\"fixture\":\"favorite\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"POST\",\"url\":\"https://conduit.productionready.io/api/articles/boundary-article/favorite\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}",
+          "logout: frozen browser observations differ; expected {\"checkpoints\":[{\"id\":\"settings\",\"values\":[\"<app>/#/settings\",\"boundary-user\",\"boundary@example.invalid\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"logged-out\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",null]}],\"id\":\"logout\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"current-user\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/user\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}, actual {\"checkpoints\":[{\"id\":\"settings\",\"values\":[\"<app>/#/settings\",\"boundary-user\",\"boundary@example.invalid\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"]},{\"id\":\"logged-out\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",null]}],\"id\":\"logout\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"current-user\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxODkzNDU2MDAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/user\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}",
+          "malformed-token: frozen browser observations differ; expected {\"checkpoints\":[{\"id\":\"malformed-token\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",\"not-a-jwt\"]}],\"id\":\"malformed-token\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Token not-a-jwt\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}, actual {\"checkpoints\":[{\"id\":\"malformed-token\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",\"not-a-jwt\"]}],\"id\":\"malformed-token\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Bearer not-a-jwt\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}",
+          "expired-token: frozen browser observations differ; expected {\"checkpoints\":[{\"id\":\"expired-token\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\"]}],\"id\":\"expired-token\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Token eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}, actual {\"checkpoints\":[{\"id\":\"expired-token\",\"values\":[\"<app>/\",\"conduit\\nHome\\nSign up\",\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\"]}],\"id\":\"expired-token\",\"requests\":[{\"body\":null,\"fixture\":\"articles\",\"headers\":{\"authorization\":\"Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpZCI6NywidXNlcm5hbWUiOiJib3VuZGFyeS11c2VyIiwiZXhwIjoxNTc3ODM2ODAwfQ.synthetic-signature\"},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/articles?limit=5&skip=0\"},{\"body\":null,\"fixture\":\"tags\",\"headers\":{\"authorization\":null},\"method\":\"GET\",\"url\":\"https://conduit.productionready.io/api/tags\"}]}"
+        ]
+      }
+    },
+    "error": "Post-extraction verification failed",
+    "restoration": {
+      "matches": true,
+      "differences": []
+    },
+    "restoredBrowser": {
+      "success": true,
+      "passed": 6,
+      "failed": 0,
+      "failures": []
+    }
+  },
+  "anchorUnchanged": true,
+  "anchorFileHash": "755698339485e729fab656ce780ba57117c81b3d7c9319102300dd609e7d3e54",
+  "review": {
+    "independent": "completed; all three Important findings closed by scoped re-review",
+    "unresolvedCritical": 0,
+    "unresolvedImportant": 0
+  }
+}

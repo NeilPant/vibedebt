@@ -1,0 +1,13 @@
+# c:\Users\tamil\Downloads\Vibe debut\.codex\config.toml
+sandbox_mode = "workspace-write"
+approval_policy = "never"
+model_reasoning_effort = "high"
+model_verbosity = "medium"
+
+[features]
+hooks = true
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+startup_timeout_ms = 20000

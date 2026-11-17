@@ -1,0 +1,21 @@
+name: Feature Request
+description: Suggest an idea or enhancement for VibeDebt
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping shape the future of autonomous architecture refactoring!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Vibe-Coding Pattern
+      description: Is your feature request related to a specific AI coding drift pattern?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Architectural Heuristic
+      description: Describe how VibeDebt should map, anchor, or refactor this pattern.
+    validations:
+      required: true

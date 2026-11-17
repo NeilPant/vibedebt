@@ -1,0 +1,107 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { randomUUID, createHash } from 'node:crypto';
+import { mapTarget } from './analysis/index.js';
+import { prepareExtraction, applyExtraction, type ExtractionPlan } from './extraction/index.js';
+import { snapshotWorkspace, restoreWorkspace, verifySnapshot, type WorkspaceSnapshot } from './runtime/snapshot.js';
+import { captureBoundary, checkCommands, replayBoundary, verifyTarget, type TargetVerification } from './verification.js';
+import { configurationHash, validateAnchor, validateTarget, type TargetManifest, type TargetAnchor } from './context.js';
+import { withTargetLock } from './locking.js';
+import { withCancellation } from './cancellation.js';
+import { normalizeBoundary } from './boundary.js';
+
+export interface TargetResult {
+  success: boolean; rolledBack: boolean; error?: string; snapshotFile?: string;
+  verification?: TargetVerification; baseline?: TargetVerification;
+  restoration?: { matches: boolean; differences: string[] };
+  restoredBrowser?: Awaited<ReturnType<typeof replayBoundary>>; plan?: ExtractionPlan;
+  checkpoint?: { ref: string; commit: string };
+}
+function sources(snapshot: WorkspaceSnapshot): TargetAnchor['sourceManifest'] {
+  return snapshot.entries.map(e => ({ path: e.path, type: e.type, ...(e.hash ? { hash: e.hash } : {}) }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+}
+async function artifactRoot(manifest: TargetManifest): Promise<string> {
+  validateTarget(manifest.root, manifest.artifacts);
+  normalizeBoundary(manifest.root, manifest.boundary);
+  const dir = join(manifest.artifacts, randomUUID()); await mkdir(dir, { recursive: true }); return dir;
+}
+export async function captureTarget(manifest: TargetManifest): Promise<TargetAnchor> {
+  return withTargetLock(manifest.root, () => withCancellation(async signal => {
+    const dir = await artifactRoot(manifest), checks = await checkCommands(manifest, signal);
+    await writeFile(join(dir, 'baseline-checks.json'), JSON.stringify(checks, null, 2));
+    if (checks.some(c => c.code !== 0 || c.timedOut)) throw new Error('Target baseline commands failed; inspect ' + dir +
+      '\n' + checks.filter(c => c.code !== 0 || c.timedOut).map(c => c.label + ': ' + c.output).join('\n'));
+    const snapshot = await snapshotWorkspace(manifest.root, join(dir, 'baseline'), manifest.boundary);
+    const bundle = await captureBoundary(manifest, signal);
+    for (let i = 0; i < 3; i++) {
+      const stability = await replayBoundary(manifest, bundle, signal);
+      if (!stability.success) throw new Error('Baseline replay unstable: ' + stability.failures.join('\n'));
+    }
+    if (!(await verifySnapshot(snapshot)).matches) throw new Error('Source changed during anchor capture');
+    const body = { version: 1 as const, id: manifest.id, revision: manifest.revision,
+      configurationHash: configurationHash(manifest), sourceManifest: sources(snapshot), bundle };
+    const anchor = { ...body, hash: createHash('sha256').update(JSON.stringify(body)).digest('hex') };
+    await writeFile(join(dir, 'anchor.json'), JSON.stringify(anchor, null, 2)); return anchor;
+  }));
+}
+export async function previewTarget(manifest: TargetManifest): Promise<ExtractionPlan> {
+  validateTarget(manifest.root, manifest.artifacts);
+  return prepareExtraction(manifest.root, manifest.selection, manifest.boundary);
+}
+export async function healTarget(manifest: TargetManifest, anchor: TargetAnchor, options: {
+  checkpoint?: boolean; afterApplyForTest?: (plan: ExtractionPlan) => Promise<void>;
+} = {}): Promise<TargetResult> {
+  validateTarget(manifest.root, manifest.artifacts); validateAnchor(manifest, anchor);
+  return withTargetLock(manifest.root, () => withCancellation(async signal => {
+    const dir = await artifactRoot(manifest);
+    let snapshot: WorkspaceSnapshot | undefined;
+    const result: TargetResult = { success: false, rolledBack: false };
+    try {
+      const map = await mapTarget(manifest.root, manifest.boundary);
+      signal.throwIfAborted();
+      await writeFile(join(dir, 'map.json'), JSON.stringify(map, null, 2));
+      if (!map.complete) throw new Error('Incomplete map: ' + map.diagnostics.join('; '));
+      result.baseline = await verifyTarget(manifest, anchor.bundle, signal);
+      if (!result.baseline.success) throw new Error('Baseline verification failed; no changes applied');
+      snapshot = await snapshotWorkspace(manifest.root, join(dir, 'snapshot'), manifest.boundary);
+      result.snapshotFile = snapshot.snapshotFile;
+      if (JSON.stringify(sources(snapshot)) !== JSON.stringify(anchor.sourceManifest)) {
+        snapshot = undefined; throw new Error('Stale source baseline; no changes applied');
+      }
+      result.plan = await prepareExtraction(manifest.root, manifest.selection, manifest.boundary);
+      signal.throwIfAborted();
+      if (!(await verifySnapshot(snapshot)).matches) { snapshot = undefined; throw new Error('Source changed before application'); }
+      if (options.checkpoint) result.checkpoint = await (await import('./runtime/checkpoint.js')).createTargetCheckpoint(snapshot);
+      await applyExtraction(result.plan);
+      await options.afterApplyForTest?.(result.plan);
+      result.verification = await verifyTarget(manifest, anchor.bundle, signal);
+      if (!result.verification.success) throw new Error('Post-extraction verification failed');
+      const changes = await verifySnapshot(snapshot);
+      if (!changes.matches && !Array.isArray(changes.changedFiles)) {
+        throw new Error('Final source inventory is incomplete: ' + changes.differences.join('; '));
+      }
+      const allowed = result.plan.changes.map(c => c.file.replaceAll('\\', '/'));
+      const unexpected = (changes.changedFiles ?? []).filter(path =>
+        !allowed.includes(path) && !allowed.some(file => file.startsWith(path + '/')));
+      if (unexpected.length) throw new Error('Unplanned source changes: ' + unexpected.join(', '));
+      for (const change of result.plan.changes) {
+        if (await readFile(join(manifest.root, change.file), 'utf8') !== change.after) {
+          throw new Error('Applied source differs from preview: ' + change.file);
+        }
+      }
+      result.success = true;
+    } catch (error) {
+      result.error = error instanceof Error ? error.message : String(error);
+      if (snapshot) {
+        try {
+          result.restoration = await restoreWorkspace(snapshot);
+          result.rolledBack = result.restoration.matches;
+          if (result.rolledBack) result.restoredBrowser = await replayBoundary(manifest, anchor.bundle);
+        } catch (restoreError) { result.error += '\nRestoration failed: ' + String(restoreError); }
+      }
+    }
+    await writeFile(join(dir, 'result.json'), JSON.stringify(result, null, 2));
+    return result;
+  }));
+}

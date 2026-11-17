@@ -1,0 +1,10 @@
+{
+  "name": "vibe-mart",
+  "version": "1.0.0",
+  "description": "VibeMart E-Commerce Showcase Fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  }
+}

@@ -1,0 +1,62 @@
+﻿diff --git a/outputs/realworld/cancellation-transaction-before.txt b/src/generic/transaction.ts
+index a9fc112..8f1187c 100644
+--- a/outputs/realworld/cancellation-transaction-before.txt
++++ b/src/generic/transaction.ts
+@@ -1,4 +1,4 @@
+-import { mkdir, readFile, writeFile } from 'node:fs/promises';
++import { mkdir, readFile, writeFile, rename, rm } from 'node:fs/promises';
+ import { join } from 'node:path';
+ import { randomUUID, createHash } from 'node:crypto';
+ import { mapTarget } from './analysis/index.js';
+@@ -39,10 +39,23 @@ export async function captureTarget(manifest: TargetManifest): Promise<TargetAnc
+       if (!stability.success) throw new Error('Baseline replay unstable: ' + stability.failures.join('\n'));
+     }
+     if (!(await verifySnapshot(snapshot)).matches) throw new Error('Source changed during anchor capture');
++    signal.throwIfAborted();
+     const body = { version: 1 as const, id: manifest.id, revision: manifest.revision,
+       configurationHash: configurationHash(manifest), sourceManifest: sources(snapshot), bundle };
+     const anchor = { ...body, hash: createHash('sha256').update(JSON.stringify(body)).digest('hex') };
+-    await writeFile(join(dir, 'anchor.json'), JSON.stringify(anchor, null, 2)); return anchor;
++    const pending = join(dir, '.anchor-pending.json'), published = join(dir, 'anchor.json');
++    let committed = false;
++    try {
++      await writeFile(pending, JSON.stringify(anchor, null, 2), { flag: 'wx' });
++      signal.throwIfAborted();
++      await rename(pending, published); committed = true;
++      signal.throwIfAborted();
++      return anchor;
++    } catch (error) {
++      await rm(pending, { force: true });
++      if (committed) await rm(published, { force: true });
++      throw error;
++    }
+   }));
+ }
+ export async function previewTarget(manifest: TargetManifest): Promise<ExtractionPlan> {
+@@ -72,12 +85,17 @@ export async function healTarget(manifest: TargetManifest, anchor: TargetAnchor,
+       result.plan = await prepareExtraction(manifest.root, manifest.selection, manifest.boundary);
+       signal.throwIfAborted();
+       if (!(await verifySnapshot(snapshot)).matches) { snapshot = undefined; throw new Error('Source changed before application'); }
+-      if (options.checkpoint) result.checkpoint = await (await import('./runtime/checkpoint.js')).createTargetCheckpoint(snapshot);
++      if (options.checkpoint) {
++        signal.throwIfAborted();
++        result.checkpoint = await (await import('./runtime/checkpoint.js')).createTargetCheckpoint(snapshot);
++      }
++      signal.throwIfAborted();
+       await applyExtraction(result.plan);
+       await options.afterApplyForTest?.(result.plan);
+       result.verification = await verifyTarget(manifest, anchor.bundle, signal);
+       if (!result.verification.success) throw new Error('Post-extraction verification failed');
+       const changes = await verifySnapshot(snapshot);
++      signal.throwIfAborted();
+       if (!changes.matches && !Array.isArray(changes.changedFiles)) {
+         throw new Error('Final source inventory is incomplete: ' + changes.differences.join('; '));
+       }
+@@ -90,6 +108,7 @@ export async function healTarget(manifest: TargetManifest, anchor: TargetAnchor,
+           throw new Error('Applied source differs from preview: ' + change.file);
+         }
+       }
++      signal.throwIfAborted();
+       result.success = true;
+     } catch (error) {
+       result.error = error instanceof Error ? error.message : String(error);

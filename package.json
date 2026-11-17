@@ -1,0 +1,33 @@
+{
+  "name": "vibedebt",
+  "version": "0.1.0",
+  "description": "Intent-to-Architecture refactoring engine for vibe-coded JavaScript/TypeScript projects",
+  "type": "module",
+  "bin": {
+    "vibedebt": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node scripts/serve-dashboard.js",
+    "serve": "node scripts/serve-dashboard.js",
+    "vibedebt:map": "npm run build --silent && node dist/cli/index.js map",
+    "vibedebt:anchor": "npm run build --silent && node dist/cli/index.js anchor",
+    "vibedebt:heal": "npm run build --silent && node dist/cli/index.js heal",
+    "vibedebt:run": "npm run build --silent && node dist/cli/index.js run",
+    "test": "vitest run",
+    "fixture:reset": "node scripts/reset-fixture.js",
+    "benchmark:realworld": "npm run build --silent && node scripts/realworld-acceptance.mjs"
+  },
+  "dependencies": {
+    "@playwright/test": "1.65.1",
+    "commander": "^13.1.0",
+    "ts-morph": "^25.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@types/react": "^19.0.10",
+    "react": "^19.0.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}
