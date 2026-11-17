@@ -39,6 +39,45 @@ it('renders a self-contained interactive report with real source evidence', () =
   expect(html).toContain('addEventListener');
   expect(html).not.toMatch(/<script[^>]+src=/);
   expect(dependencyGraph(before)).toMatch(/f\d+ --> f\d+/);
+  const graph = dependencyGraph(before);
+  expect(graph).toContain('subgraph dir_');
+  expect(graph).toContain('classDef monolith');
+  expect(graph).toContain('classDef focused');
+  expect(graph).toContain('classDef smell');
+  expect(graph).toMatch(/class f\d+ (monolith|focused|smell);/);
+});
+
+it('groups by directory, uses basename labels, escapes hostile filenames, and collapses above 40 files', () => {
+  const hostileReport = structuredClone(before);
+  hostileReport.files[0].path = 'src/<img onerror=alert(1)>.tsx';
+  const hostileGraph = dependencyGraph(hostileReport);
+  expect(hostileGraph).not.toContain('<img');
+  expect(hostileGraph).toContain('#60;#105;#109;#103;'); // entity escaped '<img'
+
+  // Test >40 files collapse
+  const largeReport = structuredClone(before);
+  largeReport.files = [];
+  for (let i = 0; i < 45; i++) {
+    const dir = i < 20 ? 'src/components' : i < 35 ? 'src/services' : 'src/utils';
+    largeReport.files.push({
+      path: `${dir}/file_${i}.ts`,
+      lineCount: 50,
+      functions: ['fn'],
+      components: [],
+      imports: i > 0 ? [{ source: `../components/file_0.js`, names: ['fn'] }] : [],
+      exports: ['fn'],
+      stateHooks: [],
+      monolithScore: false,
+    });
+  }
+  const collapsedGraph = dependencyGraph(largeReport);
+  expect(collapsedGraph).toContain('d0["');
+  expect(collapsedGraph).toContain('classDef dirNode');
+  expect(collapsedGraph).not.toContain('subgraph dir_');
+  expect(collapsedGraph).toMatch(/d\d+ -- "\d+ imports" --> d\d+/);
+
+  const collapsedHtml = htmlDashboard(largeReport);
+  expect(collapsedHtml).toContain('Showing directory view (45 files)');
 });
 it('shows genuine after metrics and escapes hostile paths/snippets', () => {
   const report = structuredClone(before);

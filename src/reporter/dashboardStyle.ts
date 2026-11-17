@@ -10,6 +10,10 @@ section{background:#121a2c;border:1px solid #26314b;border-radius:16px;padding:2
 .metric,.tile,article{border:1px solid #303d5b;border-radius:10px;padding:16px;background:#182238}
 .metric strong{font-size:30px;display:block;color:#c4bcff}.tile.hot{border-left:5px solid #fb8e82}
 .tile.cool{border-left:5px solid #7de2c3}.badge{display:inline-block;padding:4px 9px;margin:3px;border-radius:7px;background:#302c51;color:#c6beff}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 16px;font-size:13px}
+.legend-item{display:inline-flex;align-items:center;gap:6px;color:#dae1f4}
+.legend-dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend-dot.coral{background:#fb8e82}.legend-dot.violet{background:#c4bcff}.legend-dot.teal{background:#7de2c3}
 input,button{font:inherit;border-radius:8px;border:1px solid #4d5f84;background:#19243c;color:#edf1fc;padding:10px 15px}
 input{width:min(450px,100%)}button{cursor:pointer}button:hover{background:#303761}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace;background:#0b1223;padding:14px;border-radius:8px}
