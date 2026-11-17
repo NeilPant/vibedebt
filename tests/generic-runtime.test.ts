@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdtemp, mkdir, readFile, writeFile, rm, symlink, stat, chmod } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, rm, symlink, stat, chmod, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { execFileSync, spawn } from 'node:child_process';
@@ -8,8 +8,10 @@ import { isAlive as alive } from '../src/generic/runtime/process-tree.js';
 
 const temporary: string[] = [];
 async function fixture() {
-  const base = await mkdtemp(path.join(os.tmpdir(), 'generic-runtime-'));
-  temporary.push(base);
+  const rawBase = await mkdtemp(path.join(os.tmpdir(), 'generic-runtime-'));
+  temporary.push(rawBase);
+  const base = await realpath(rawBase).catch(() => rawBase);
+  if (base !== rawBase) temporary.push(base);
   const root = path.join(base, 'target');
   const artifacts = path.join(base, 'artifacts');
   await mkdir(root);

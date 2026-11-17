@@ -14,8 +14,11 @@ import * as snapshotRuntime from '../src/generic/runtime/snapshot.js';
 const require = createRequire(import.meta.url), roots: string[] = [];
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }); });
 async function target(): Promise<TargetManifest> {
-  const parent = await mkdtemp(join(tmpdir(), 'vibedebt-transaction-')); roots.push(parent);
+  const rawParent = await mkdtemp(join(tmpdir(), 'vibedebt-transaction-')); roots.push(rawParent);
+  const parent = await filesystem.realpath(rawParent).catch(() => rawParent);
+  if (parent !== rawParent) roots.push(parent);
   const root = join(parent, 'app'); await mkdir(join(root, 'src'), { recursive: true });
+  await writeFile(join(root, 'vite.config.ts'), 'export default { server: { fs: { strict: false } } };\n');
   await writeFile(join(root, 'package.json'), JSON.stringify({ type: 'module' }));
   await writeFile(join(root, 'tsconfig.json'), JSON.stringify({ compilerOptions: {
     target: 'ES2022', module: 'ESNext', moduleResolution: 'bundler', strict: true,

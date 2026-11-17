@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { resolve, join, dirname } from 'node:path';
 import { createRequire } from 'node:module';
 import type { VerificationResult } from '../contracts/types.js';
 
@@ -45,7 +45,8 @@ export async function runVitest(testFiles: string[]): Promise<VerificationResult
       include: testFiles.map(f => resolve(f).replaceAll('\\', '/')), exclude: [],
       globals: true, environment: 'node', fileParallelism: false, testTimeout: 30000,
     } })};\n`);
-    const command = await runProcess(process.execPath, [require.resolve('vitest/vitest.mjs'), 'run',
+    const vitestBin = join(dirname(require.resolve('vitest/package.json')), 'vitest.mjs');
+    const command = await runProcess(process.execPath, [vitestBin, 'run',
       '--config', config, '--reporter=json', '--outputFile', results]);
     let passed = 0, failed = 0, details = '';
     try {

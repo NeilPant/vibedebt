@@ -96,6 +96,7 @@ export async function restoreWorkspace(snapshot: WorkspaceSnapshot): Promise<Res
 export async function recoverSnapshot(file: string): Promise<RestorationEvidence> {
   const value: unknown = JSON.parse(await readFile(file, 'utf8'));
   validateSnapshot(value);
-  if (path.resolve(file) !== path.join(value.artifactDir, 'snapshot.json')) throw new Error('Recovery manifest location does not match artifact directory');
+  const [actual, expected] = await Promise.all([canonicalFuture(file), canonicalFuture(path.join(value.artifactDir, 'snapshot.json'))]);
+  if (actual !== expected) throw new Error('Recovery manifest location does not match artifact directory');
   return restoreWorkspace(value);
 }
