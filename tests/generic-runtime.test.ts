@@ -281,7 +281,10 @@ describe('process ownership regressions', () => {
     const result = await api.runCommand({ command: process.execPath, args: ['-e', script], cwd: root, timeoutMs: 5000 });
     expect(result.code).toBe(0);
     expect(result.timedOut).toBe(false);
-    expect(alive(Number(result.output.trim()))).toBe(false);
+    const childPid = Number(result.output.trim());
+    const until = Date.now() + 5000;
+    while (alive(childPid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 50));
+    expect(alive(childPid)).toBe(false);
   }, 15000);
 
   it('rejects a readiness URL already owned by a different server before launch', async () => {

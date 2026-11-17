@@ -15,7 +15,7 @@ afterAll(reset);
 
 describe('map → anchor → heal', () => {
   it('previews exact changes without creating anchors, locks, artifacts or fixture files', async () => {
-    const snapshot = (dir: string): Record<string,string> => Object.fromEntries(readdirSync(dir, {recursive:true,withFileTypes:true})
+    const snapshot = (dir: string): Record<string,string> => !existsSync(dir) ? {} : Object.fromEntries(readdirSync(dir, {recursive:true,withFileTypes:true})
       .filter(e => e.isFile()).map(e => { const file=join(e.parentPath,e.name); return [file,readFileSync(file).toString('base64')]; }));
     const before = snapshot(target), artifacts = snapshot(resolve('.vibedebt'));
     const preview = await heal(target, {dryRun:true});
