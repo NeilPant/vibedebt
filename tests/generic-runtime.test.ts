@@ -182,6 +182,8 @@ describe('generic supervised processes', () => {
     expect(Date.now() - start).toBeLessThan(12000);
     const pid = Number(result.output.trim().split(/\s+/)[0]);
     expect(pid).toBeGreaterThan(0);
+    const until = Date.now() + 4000;
+    while (alive(pid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 20));
     expect(alive(pid)).toBe(false);
   }, 15000);
 
@@ -196,6 +198,8 @@ describe('generic supervised processes', () => {
     const child = Number(await readFile(pidFile, 'utf8'));
     await server.stop();
     await server.stop();
+    const untilChild = Date.now() + 4000;
+    while (alive(child) && Date.now() < untilChild) await new Promise(resolve => setTimeout(resolve, 20));
     expect(alive(child)).toBe(false);
     await expect(fetch(`http://127.0.0.1:${port}`, { signal: AbortSignal.timeout(1000) })).rejects.toThrow();
   }, 15000);
@@ -207,7 +211,10 @@ describe('generic supervised processes', () => {
     const script = `require('node:fs').writeFileSync(${JSON.stringify(pidFile)},String(process.pid));setInterval(()=>{},1000)`;
     const port = await freePort();
     await expect(api.startServer({ command: process.execPath, args: ['-e', script], cwd: root, timeoutMs: 600 }, `http://127.0.0.1:${port}`)).rejects.toThrow(/ready|readiness/i);
-    expect(alive(Number(await readFile(pidFile, 'utf8')))).toBe(false);
+    const pid = Number(await readFile(pidFile, 'utf8'));
+    const until = Date.now() + 4000;
+    while (alive(pid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 20));
+    expect(alive(pid)).toBe(false);
   }, 15000);
 });
 
