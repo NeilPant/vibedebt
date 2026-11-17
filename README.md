@@ -1,4 +1,4 @@
-﻿# VibeDebt
+# VibeDebt
 
 ```text
  __      ___ _          _____       _     _   
@@ -15,7 +15,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tamilselvan04200803-max/vibedebt"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/tamilselvan04200803-max/vibedebt/stargazers"><img src="https://img.shields.io/github/stars/tamilselvan04200803-max/vibedebt?style=social" alt="GitHub stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Node-%E2%89%A522.18-339933?logo=nodedotjs&logoColor=white" alt="Node 22.18+">
   <a href="https://github.com/tamilselvan04200803-max/vibedebt/actions/workflows/ci.yml"><img src="https://github.com/tamilselvan04200803-max/vibedebt/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.8%20strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5.8 Strict"></a>
   <a href="https://github.com/tamilselvan04200803-max/vibedebt/tree/main/tests"><img src="https://img.shields.io/badge/Tests-139%20Passed%20%7C%201%20Skipped%20(140%20Total)-729B1B?logo=vitest&logoColor=white" alt="Vitest Tests"></a>
@@ -28,6 +30,17 @@
 <p align="center">
   <img src="assets/dashboard-preview.png" alt="VibeDebt Architecture Observatory Dashboard" width="900" style="border-radius: 8px; border: 1px solid #303d5b;">
 </p>
+
+---
+
+## 🤔 Why VibeDebt?
+
+| Asking an LLM to "clean this up" | VibeDebt |
+| :--- | :--- |
+| Edge cases silently dropped | Current behavior frozen as tests **before** any change |
+| You review a giant diff and hope | Every change must pass typecheck + all anchors |
+| A bad edit stays on disk | Failure triggers a **byte-for-byte rollback** |
+| "Trust me" | Measured before/after numbers (see [benchmarks](#-measured-benchmark-evidence)) |
 
 ---
 
@@ -59,6 +72,21 @@ npm ci
 npm run demo
 ```
 
+Or just look at the map step on the bundled fixture (no build needed, Node 22.18+):
+
+```sh
+node bin/vibedebt.js map fixtures/vibe-mart
+```
+
+```text
+VibeDebt AST Cartographer
+Files: 6
+Monolithic files: 3
+Duplicated logic groups: 37
+Orphaned state: 6
+API inconsistencies: 2
+```
+
 This opens the **Architecture Observatory** at `http://localhost:3000` (or open `vibedebt-dashboard.html` offline).
 
 ---
@@ -68,11 +96,13 @@ This opens the **Architecture Observatory** at `http://localhost:3000` (or open 
 You can run VibeDebt's **Cartographer** on any JavaScript or TypeScript repository right now:
 
 ```sh
+git clone https://github.com/tamilselvan04200803-max/vibedebt.git && cd vibedebt && npm ci
+
 # 1. Map any repository and generate an offline HTML dashboard
-node dist/cli/index.js map ../my-app --html my-dashboard.html
+node bin/vibedebt.js map ../my-app --html my-dashboard.html
 
 # 2. Or output structured JSON for CI/CD linting
-node dist/cli/index.js map ../my-app --out topology.json
+node bin/vibedebt.js map ../my-app --out topology.json
 ```
 
 ### What `map` gives you on any repo:
@@ -189,6 +219,18 @@ node dist/cli/index.js run <targetDir> [--html [htmlPath]] [--dry-run] [--ai]
 
 ---
 
+## 🗺️ Roadmap
+
+- [ ] Publish to npm so `npx vibedebt map .` works with zero setup
+- [ ] GitHub Action that comments the topology report on pull requests
+- [ ] More healer transforms (dead-code removal, shared hook extraction)
+- [ ] Vue / Svelte component support in the Cartographer
+- [ ] VS Code extension for the Architecture Observatory
+
+Have an idea? [Open a feature request](https://github.com/tamilselvan04200803-max/vibedebt/issues/new?template=feature_request.yml).
+
+---
+
 ## 🤝 Contributing & Community
 
 We welcome contributions! Please review our community guides:
@@ -205,6 +247,10 @@ npx vitest run
 ```
 
 ---
+
+<p align="center">
+  If VibeDebt saved you from a risky AI refactor, please consider giving it a ⭐ — it helps others find it.
+</p>
 
 <p align="center">
   <strong>VibeDebt</strong> &mdash; <em>A safety net for AI refactors.</em><br>

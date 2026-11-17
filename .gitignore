@@ -2,3 +2,4 @@ node_modules/
 dist/
 .vibedebt/
 vibedebt-dashboard.html
+.codex/

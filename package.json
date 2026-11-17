@@ -2,6 +2,32 @@
   "name": "vibedebt",
   "version": "0.1.0",
   "description": "Intent-to-Architecture refactoring engine for vibe-coded JavaScript/TypeScript projects",
+  "license": "MIT",
+  "homepage": "https://github.com/tamilselvan04200803-max/vibedebt#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamilselvan04200803-max/vibedebt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tamilselvan04200803-max/vibedebt/issues"
+  },
+  "keywords": [
+    "refactoring",
+    "ai-coding",
+    "vibe-coding",
+    "code-quality",
+    "technical-debt",
+    "typescript",
+    "ast",
+    "ts-morph",
+    "characterization-tests",
+    "rollback",
+    "static-analysis",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
   "type": "module",
   "bin": {
     "vibedebt": "./dist/cli/index.js"
