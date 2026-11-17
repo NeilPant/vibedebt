@@ -13,7 +13,7 @@ jobs:
   verify:
     name: Verify (${{ matrix.os }}, Node ${{ matrix.node-version }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 25
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -25,8 +25,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
-      - name: Install browser test dependencies
+      - name: Install browser test dependencies (Ubuntu)
+        if: runner.os == 'Linux'
         run: npx playwright install --with-deps chromium
+      - name: Install browser test dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: npx playwright install chromium
       - run: node scripts/reset-fixture.js
       - name: Typecheck
         run: npx tsc --noEmit
