@@ -5,9 +5,10 @@ import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { createCheckpoint } from '../src/healer/gitCheckpoint.js';
 import { withRollback } from '../src/healer/rollbackGuard.js';
+import { canonicalPath } from '../src/verification/pathSafety.js';
 
 it('retains root-repository checkpoints when source verification rolls back', async () => {
-  const dir=mkdtempSync(join(tmpdir(),'vibedebt-root-checkpoint-'));
+  const rawDir=mkdtempSync(join(tmpdir(),'vibedebt-root-checkpoint-')), dir=canonicalPath(rawDir);
   const git=(...args:string[]):string => execFileSync('git',args,{cwd:dir,encoding:'utf8',windowsHide:true}).trim();
   try {
     git('init','--quiet');writeFileSync(join(dir,'a.ts'),'original');git('add','.');
@@ -18,11 +19,11 @@ it('retains root-repository checkpoints when source verification rolls back', as
     expect(result.rolledBack).toBe(true);
     expect(readFileSync(join(dir,'a.ts'),'utf8')).toBe('original');
     expect(git('show',`${checkpoint!.ref}:a.ts`)).toBe('original');
-  } finally {rmSync(dir,{recursive:true,force:true});}
+  } finally {rmSync(rawDir,{recursive:true,force:true});}
 });
 
 it('checkpoints the target while preserving HEAD, the user index and unrelated staged changes', () => {
-  const dir=mkdtempSync(join(tmpdir(),'vibedebt-git-'));
+  const rawDir=mkdtempSync(join(tmpdir(),'vibedebt-git-')), dir=canonicalPath(rawDir);
   const git=(...args:string[]):string => execFileSync('git',args,{cwd:dir,encoding:'utf8',windowsHide:true}).trim();
   try {
     git('init','--quiet');mkdirSync(join(dir,'target'));
@@ -38,5 +39,5 @@ it('checkpoints the target while preserving HEAD, the user index and unrelated s
     expect(git('show',`${checkpoint.ref}:target/new.ts`)).toBe('new file');
     expect(git('show',`${checkpoint.ref}:outside.txt`)).toBe('original');
     expect(git('rev-parse',checkpoint.ref)).toBe(checkpoint.commit);
-  } finally {rmSync(dir,{recursive:true,force:true});}
+  } finally {rmSync(rawDir,{recursive:true,force:true});}
 });

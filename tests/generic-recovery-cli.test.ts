@@ -5,12 +5,15 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { snapshotWorkspace } from '../src/generic/runtime/snapshot.js';
 import { runCommand } from '../src/generic/runtime/process.js';
+import { canonicalPath } from '../src/verification/pathSafety.js';
 
 const roots: string[] = [];
 beforeAll(() => { execFileSync(process.execPath, ['node_modules/typescript/bin/tsc', '-p', 'tsconfig.build.json']); });
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }); });
 it('recovers deleted configured source roots and tsconfig through the production CLI', async () => {
-  const parent = await mkdtemp(join(tmpdir(), 'vibedebt-cli-recovery-')); roots.push(parent);
+  const rawParent = await mkdtemp(join(tmpdir(), 'vibedebt-cli-recovery-')); roots.push(rawParent);
+  const parent = canonicalPath(rawParent);
+  if (parent !== rawParent) roots.push(parent);
   const root = join(parent, 'app'), artifacts = join(parent, 'artifacts');
   await mkdir(join(root, 'src'), { recursive: true }); await mkdir(join(root, 'config'));
   await writeFile(join(root, 'src/value.ts'), 'export const value = 7;\n');

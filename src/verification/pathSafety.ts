@@ -4,9 +4,15 @@ import { resolve, relative, dirname, basename, join, isAbsolute } from 'node:pat
 /** Resolve existing ancestors so junctions and symbolic links cannot bypass boundaries. */
 export function canonicalPath(path: string): string {
   const absolute = resolve(path);
-  if (existsSync(absolute)) return realpathSync(absolute);
-  const parent = dirname(absolute);
-  return parent === absolute ? absolute : join(canonicalPath(parent), basename(absolute));
+  const realpathFn = realpathSync.native ?? realpathSync;
+  const resolved = existsSync(absolute) ? realpathFn(absolute) : (() => {
+    const parent = dirname(absolute);
+    return parent === absolute ? absolute : join(canonicalPath(parent), basename(absolute));
+  })();
+  if (process.platform === 'win32' && resolved.length >= 2 && resolved[1] === ':') {
+    return resolved[0].toUpperCase() + resolved.slice(1);
+  }
+  return resolved;
 }
 function contains(parent: string, child: string): boolean {
   const rest = relative(parent, child);

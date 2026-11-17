@@ -18,7 +18,8 @@ export function createCheckpoint(targetDir: string): {ref:string; commit:string}
     return result.stdout.trim();
   };
   try {
-    const root=canonicalPath(git(['rev-parse','--show-toplevel'])),path=relative(root,target).replaceAll('\\','/');
+    const root=canonicalPath(git(['rev-parse','--show-toplevel']));
+    const path=root.toLowerCase()===target.toLowerCase()?'':relative(root,target).replaceAll('\\','/');
     if(path.startsWith('..') || isAbsolute(path)) throw new Error('Checkpoint target must be inside the repository');
     const head=git(['rev-parse','--verify','HEAD'],false);
     git(head?['read-tree',head]:['read-tree','--empty']);

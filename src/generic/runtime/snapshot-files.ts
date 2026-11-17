@@ -1,11 +1,21 @@
 import { createHash } from 'node:crypto';
-import { lstat, readdir, readFile, realpath, stat } from 'node:fs/promises';
+import { lstat, readdir, readFile, stat } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import type { SnapshotEntry, WorkspaceSnapshot } from './types.js';
 import { defaultExcludedNames, excludedPath, relativeSetting } from '../boundary.js';
 
 function excluded(relative: string, excludedPaths: string[], legacyDefaults: boolean): boolean {
   return excludedPath(relative, excludedPaths) || (legacyDefaults && relative.split('/').some(part => defaultExcludedNames.has(part.toLowerCase())));
+}
+
+function nativePath(location: string): string {
+  const realpathFn = realpathSync.native ?? realpathSync;
+  const resolved = realpathFn(location);
+  if (process.platform === 'win32' && resolved.length >= 2 && resolved[1] === ':') {
+    return resolved[0].toUpperCase() + resolved.slice(1);
+  }
+  return resolved;
 }
 
 export function digest(bytes: Uint8Array): string { return createHash('sha256').update(bytes).digest('hex'); }
@@ -18,7 +28,9 @@ export function assertSeparate(root: string, artifacts: string): void {
 }
 export async function canonicalFuture(location: string): Promise<string> {
   const absolute = path.resolve(location);
-  try { return await realpath(absolute); } catch (error) {
+  try {
+    return nativePath(absolute);
+  } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
     const parent = path.dirname(absolute);
     if (parent === absolute) throw error;
@@ -94,17 +106,17 @@ export function validateSnapshot(value: unknown): asserts value is WorkspaceSnap
 }
 export async function validateBoundary(snapshot: WorkspaceSnapshot): Promise<void> {
   validateSnapshot(snapshot);
-  const root = await realpath(snapshot.root);
+  const root = nativePath(snapshot.root);
   if (root !== snapshot.root || (await lstat(snapshot.root)).isSymbolicLink()) throw new Error('Snapshot target root changed');
   const identity = await stat(root);
   if (identity.dev !== snapshot.rootIdentity.dev || identity.ino !== snapshot.rootIdentity.ino) throw new Error('Snapshot target identity changed');
-  const artifact = await realpath(snapshot.artifactDir);
+  const artifact = nativePath(snapshot.artifactDir);
   if (artifact !== snapshot.artifactDir) throw new Error('Snapshot artifact path changed');
   assertSeparate(root, artifact);
 }
 export async function readBlob(snapshot: WorkspaceSnapshot, entry: SnapshotEntry): Promise<Buffer> {
   const blob = path.join(snapshot.artifactDir, 'blobs', entry.hash!);
-  if (await realpath(blob) !== blob || !(await lstat(blob)).isFile()) throw new Error(`Invalid snapshot blob path: ${entry.path}`);
+  if (nativePath(blob) !== blob || !(await lstat(blob)).isFile()) throw new Error(`Invalid snapshot blob path: ${entry.path}`);
   const bytes = await readFile(blob);
   if (digest(bytes) !== entry.hash) throw new Error(`Snapshot blob hash corrupt: ${entry.path}`);
   return bytes;
