@@ -1,6 +1,6 @@
 # VibeDebt Topology & Refactor PR Report
 
-Target: `C:\Users\tamil\Downloads\Vibe debut\fixtures\vibe-mart`  
+Target: `fixtures/vibe-mart`  
 Status: **Verified successfully**
 
 ## Debt before and after
@@ -31,7 +31,7 @@ Clusters represent repeated AST expressions, including nested expressions; they 
 - Post-refactor invariant and anchor gate: **122 passed, 0 failed**.
 - TypeScript gate: **passed**.
 - Rollback: **not needed**.
-- Anchor suite: `C:\Users\tamil\Downloads\Vibe debut\.vibedebt\generated-anchor.test.ts`.
+- Anchor suite: `.vibedebt/generated-anchor.test.ts`.
 
 
 ## Changed files

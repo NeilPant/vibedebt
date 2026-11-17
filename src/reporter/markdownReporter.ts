@@ -1,4 +1,11 @@
+import { relative } from 'node:path';
 import type { PullRequestReport, TopologyReport } from '../contracts/types.js';
+
+const cleanPath = (p: string): string => {
+  if (!p) return '';
+  const rel = relative(process.cwd(), p).replaceAll('\\', '/');
+  return rel.startsWith('..') ? p.replaceAll('\\', '/') : (rel || '.');
+};
 
 const cell = (text: string): string => text.replaceAll('|', '\\|').replaceAll('`', '\\`').replace(/[\r\n]/g, ' ');
 const componentLines = (report: TopologyReport): number => report.files
@@ -15,7 +22,7 @@ export function markdownReport(report: PullRequestReport): string {
   const status = heal.success ? 'Verified successfully' : heal.rolledBack ? 'Failed; changes rolled back' : 'Failed before mutation';
   return `# VibeDebt Topology & Refactor PR Report
 
-Target: \`${cell(report.targetDir)}\`  
+Target: \`${cell(cleanPath(report.targetDir))}\`  
 Status: **${status}**
 
 ## Debt before and after
@@ -28,7 +35,7 @@ Clusters represent repeated AST expressions, including nested expressions; they 
 
 ## Extracted modules
 
-${heal.extractedModules.length ? heal.extractedModules.map(path => `- \`${cell(path)}\``).join('\n') : '- No new modules.'}
+${heal.extractedModules.length ? heal.extractedModules.map(path => `- \`${cell(cleanPath(path))}\``).join('\n') : '- No new modules.'}
 
 ## API boundary and compatibility
 
@@ -42,13 +49,16 @@ ${heal.apiBoundaryFixes.length ? heal.apiBoundaryFixes.map(fix => `- ${cell(fix)
 - Post-refactor invariant and anchor gate: **${heal.verification.passed} passed, ${heal.verification.failed} failed**.
 - TypeScript gate: **${heal.success ? 'passed' : 'see failure details'}**.
 - Rollback: **${heal.rolledBack ? 'restored original snapshot' : 'not needed'}**.
-- Anchor suite: \`${cell(anchor.testFile)}\`.
+- Anchor suite: \`${cell(cleanPath(anchor.testFile))}\`.
 ${heal.checkpoint ? `- Retained recovery checkpoint: \`${cell(heal.checkpoint.ref)}\` (\`${cell(heal.checkpoint.commit)}\`).` : ''}
 
 ## Changed files
 
-${heal.changedFiles.length ? heal.changedFiles.map(path => `- \`${cell(path)}\``).join('\n') : '- No retained changes.'}
-\n## Business intent\n\n${(report.businessIntents ?? after.businessIntents ?? []).map(i => `- **${cell(i.name)}** (${i.source}): ${cell(i.summary)}`).join('\n') || 'No domain functions discovered.'}
+${heal.changedFiles.length ? heal.changedFiles.map(path => `- \`${cell(cleanPath(path))}\``).join('\n') : '- No retained changes.'}
+
+## Business intent
+
+${(report.businessIntents ?? after.businessIntents ?? []).map(i => `- **${cell(i.name)}** (${i.source}): ${cell(i.summary)}`).join('\n') || 'No domain functions discovered.'}
 ${heal.error ? `\n## Failure details\n\n${cell(heal.error)}\n` : ''}
 `;
 }

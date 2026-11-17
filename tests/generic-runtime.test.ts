@@ -14,7 +14,7 @@ async function fixture() {
   await mkdir(root);
   return { base, root, artifacts };
 }
-afterEach(async () => { await Promise.all(temporary.splice(0).map(p => rm(p, { recursive: true, force: true }))); });
+afterEach(async () => { await Promise.all(temporary.splice(0).map(p => rm(p, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => {}))); });
 async function snapshots() {
   const module = await import('../src/generic/runtime/snapshot.js').catch(() => null);
   expect(module, 'snapshot runtime must exist').not.toBeNull();

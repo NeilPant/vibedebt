@@ -10,227 +10,203 @@
 ```
 
 <p align="center">
-  <strong>The Autonomous "Intent-to-Architecture" Refactoring Engine for the Vibe Coding Era.</strong><br>
-  <em>AI generates the spaghetti; VibeDebt untangles it into production-grade modular architecture.</em>
+  <strong>A Safety Net for AI Refactors: Evidence-First, Test-Guarded Codebase Restructuring.</strong><br>
+  <em>AI writes the spaghetti. VibeDebt locks in existing behavior with black-box behavioral anchors before extracting shared domain modules under an automatic rollback guard.</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/tamilselvan04200803-max/vibedebt"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://github.com/tamilselvan04200803-max/vibedebt/actions/workflows/ci.yml"><img src="https://github.com/tamilselvan04200803-max/vibedebt/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.8%20strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5.8 Strict"></a>
-  <a href="https://github.com/tamilselvan04200803-max/vibedebt/tree/main/tests"><img src="https://img.shields.io/badge/Vitest-139%20Passed-729B1B?logo=vitest&logoColor=white" alt="Vitest 139 Passed"></a>
-  <a href="#three-phases-one-behavioral-boundary"><img src="https://img.shields.io/badge/Architecture-Clean%20Domain-9e93ff" alt="Architecture"></a>
-  <a href="#deploy-with-firebase-app-hosting"><img src="https://img.shields.io/badge/Firebase-App%20Hosting%20Ready-FFA611?logo=firebase&logoColor=white" alt="Firebase App Hosting"></a>
-  <a href="#code-quality--guarantees"><img src="https://img.shields.io/badge/Code%20Quality-0%20Any%20Types-success" alt="Code Quality: 0 Any"></a>
+  <a href="https://github.com/tamilselvan04200803-max/vibedebt/tree/main/tests"><img src="https://img.shields.io/badge/Tests-139%20Passed%20%7C%201%20Skipped%20(140%20Total)-729B1B?logo=vitest&logoColor=white" alt="Vitest Tests"></a>
+  <a href="#how-it-works-three-phases-one-safety-boundary"><img src="https://img.shields.io/badge/Architecture-Clean%20Domain-9e93ff" alt="Architecture"></a>
+  <a href="#code-quality--test-enforcement"><img src="https://img.shields.io/badge/Modularity-%3C250%20LOC%20%2F%200%20Any-success" alt="Modularity"></a>
 </p>
 
 ---
 
-## 🌟 Why VibeDebt? (The $1.5 Trillion Dilemma)
-
-In 2025, Andrej Karpathy coined **"vibe coding"**—describing what you want in natural language and letting LLMs generate the code. By 2027, enterprise analysts project **$1.5 Trillion in technical debt** resulting from AI-generated applications.
-
-When developers vibe code:
-1. **The AI solves only the immediate prompt**, ignoring macro-system architecture.
-2. **Duplicated algorithms proliferate**: The same discount formula, validation check, or API wrapper gets written 5 different ways across 5 monolithic files.
-3. **Dead state & orphaned variables pile up**: Hallucinated drafts and unused state hooks linger forever.
-4. **Code freezes**: Human maintainers can no longer reason about the system, and AI context windows become too confused to edit safely.
-
-**VibeDebt is the reverse-compiler for intent.** It does not ask you to stop vibe coding. It embraces the workflow: **Vibe code as fast as you want—then run VibeDebt to turn it into production-ready software.**
+<p align="center">
+  <img src="assets/dashboard-preview.png" alt="VibeDebt Architecture Observatory Dashboard" width="900" style="border-radius: 8px; border: 1px solid #303d5b;">
+</p>
 
 ---
 
-## 🚀 60-Second Quickstart
+## 🎯 The Core Idea: A Safety Net for AI Refactors
 
-Requires Node.js 24+. Run these commands from the repository root:
+Developers love "vibe coding" with LLMs (Cursor, Copilot, Claude, GPT), but as features accumulate, code quietly drifts into monolithic files, duplicated calculation loops, fragmented API endpoints, and dead state. 
+
+Asking an LLM to blindly "refactor this project" is risky: models easily drop edge cases, subtly alter arithmetic, or break assumptions that only integration tests would catch.
+
+**VibeDebt acts as an automated safety harness:**
+1. **Map**: Discovers AST topology, duplicated expression clusters, and unread state variables across your project.
+2. **Anchor**: Treats the unrefactored code as a black box and synthesizes a runnable behavioral test suite (Vitest / Playwright) against public boundaries to freeze current behavior.
+3. **Heal**: Executes atomic AST extractions into clean domain modules behind a **transactional rollback guard**. If any test or typecheck fails, VibeDebt restores the original source files byte-for-byte.
+
+> **Scope Note**: VibeDebt provides *preserved behavior for exercised paths*, not mathematical semantic equivalence or complete test coverage. Intent summaries are heuristic (inferred from AST names and operations).
+
+---
+
+## 🚀 One-Command Interactive Demo
+
+Experience the full pipeline on the author-constructed benchmark fixture:
 
 ```sh
-# 1. Install dependencies and ensure clean baseline
+git clone https://github.com/tamilselvan04200803-max/vibedebt.git
+cd vibedebt
 npm ci
-node scripts/reset-fixture.js
 
-# 2. Run the end-to-end VibeDebt pipeline with offline interactive dashboard
-npm run vibedebt:run -- fixtures/vibe-mart --html
-
-# 3. Launch the local interactive observatory
-npm run serve
+# Resets fixture, runs map -> anchor -> heal, and starts the visualizer
+npm run demo
 ```
 
-Open `http://localhost:3000` (or `vibedebt-dashboard.html`) in your browser to view the **Architecture Observatory**.
-
-The automated run:
-- **Discovers AST Topology**: Maps 6 source files, finding 37 duplicate expression clusters, 6 orphaned state variables, and 2 API path divergences.
-- **Synthesizes 109 Behavioral Anchors**: Locks in exact business logic without touching internal private variables.
-- **Executes Transactional Healing**: Extracts domain logic into `domain/pricing.ts` and `services/apiRoutes.ts`, verifying that **122/122 invariants and characterization tests pass**.
-- **Generates Full PR Report**: Summarizes metrics in `VIBEDEBT_REPORT.md`.
-
-Reset the repeatable benchmark at any time:
-```sh
-node scripts/reset-fixture.js
-```
-
-Want to preview exact file diffs first with zero disk mutation?
-```sh
-npm run vibedebt:run -- fixtures/vibe-mart --dry-run
-```
+This opens the **Architecture Observatory** at `http://localhost:3000` (or open `vibedebt-dashboard.html` offline).
 
 ---
 
-## ⚡ The Three Phases: Intent to Architecture
+## 🔍 Use It on Your Own Project
+
+You can run VibeDebt's **Cartographer** on any JavaScript or TypeScript repository right now:
+
+```sh
+# 1. Map any repository and generate an offline HTML dashboard
+node dist/cli/index.js map ../my-app --html my-dashboard.html
+
+# 2. Or output structured JSON for CI/CD linting
+node dist/cli/index.js map ../my-app --out topology.json
+```
+
+### What `map` gives you on any repo:
+- **Dependency Graph**: Interactive Mermaid graph of imports and module relationships.
+- **Duplicate Expression Clusters**: AST clone detection uncovering copy-pasted logic.
+- **Orphaned State Detector**: Scope taint analysis flagging declared React state variables that are never read in JSX or effects.
+- **API Boundary Divergences**: Uncovers divergent route versions (e.g. `/api/v1/users` vs `/api/users`).
+
+### Running manifest-driven refactoring targets:
+For targeted refactoring, configure a target manifest:
+```json
+{
+  "boundary": {
+    "sourceRoots": ["src"],
+    "tsconfig": "tsconfig.json",
+    "excludedPaths": ["dist", "coverage", "node_modules"]
+  }
+}
+```
+Run `node dist/cli/index.js target-heal --manifest manifest.json --dry-run` to preview in-memory diffs. If an unsupported code shape or unrecognized AST construct is encountered, VibeDebt **fails closed with zero disk modifications**.
+
+---
+
+## ⚡ How It Works: Three Phases, One Safety Boundary
 
 ```mermaid
 flowchart LR
   A["Phase 1: map<br/>(AST Cartographer)"] --> B["Phase 2: anchor<br/>(Test Synthesizer)"]
-  B --> C["Phase 3: heal<br/>(Architectural Healer)"]
+  B --> C["Phase 3: heal<br/>(Transactional Healer)"]
   C --> D{"Typecheck, Invariants &<br/>Anchors 100% Pass?"}
-  D -->|Yes| E["Accept Refactor &<br/>Emit PR Diff"]
+  D -->|Yes| E["Accept Changes &<br/>Emit PR Report"]
   D -->|No| F["Byte-for-Byte Auto Rollback"]
 ```
 
-### 1. Phase 1: Codebase Cartographer (`vibedebt map`)
-- Uses `ts-morph` to traverse the Abstract Syntax Tree (AST) across all project files.
-- Builds an entity-level dependency graph connecting components, state hooks, and API endpoints.
-- Detects architectural code smells:
-  - **Duplicated Logic**: Subtree canonicalization and AST expression clone detection.
-  - **Orphaned State**: Scope taint analysis detecting write-only or unused state declarations.
-  - **Inconsistent APIs**: Endpoint URL normalization uncovering divergent versions (`/api` vs `/api/v1`).
-- Outputs structured topology JSON and human-readable reports.
-
-### 2. Phase 2: Test Harness Synthesizer (`vibedebt anchor`)
-- Follows the **Pure Black-Box Characterization Principle**: Observes only public boundaries (exported APIs, route handlers, user journeys).
-- Synthesizes a deterministic Vitest / Playwright suite (`.vibedebt/generated-anchor.test.ts`) that achieves a **100% pass rate on unrefactored code**.
-- These tests serve as an immutable regression safety net—the refactorer is judged against them without ever modifying the test assertions.
-
-### 3. Phase 3: Architectural Refactoring Engine (`vibedebt heal`)
-- Refactors monolithic components into a clean 5-layer modular architecture (`domain/`, `services/`, `hooks/`, `components/`).
-- Rewires cross-file imports and exports automatically.
-- Enforces an automated **Compile-and-Test Verification Loop**:
-  - Compiles TypeScript (`tsc --noEmit`).
-  - Runs all baseline invariants and synthesized anchors.
-  - If any failure occurs, **RollbackGuard** automatically restores original source bytes and deletes newly created files.
+1. **Phase 1: Codebase Cartographer (`vibedebt map`)**  
+   Inventories functions, components, state hooks, and imports using `ts-morph`. Normalizes AST expressions to flag duplicated math clusters and dead state buffers.
+2. **Phase 2: Test Harness Synthesizer (`vibedebt anchor`)**  
+   Probes public exports and HTTP routes. Generates a standalone Vitest / Playwright test suite (`.vibedebt/generated-anchor.test.ts`) that achieves a 100% pass rate on the unrefactored code without importing private variables.
+3. **Phase 3: Architectural Healer (`vibedebt heal`)**  
+   Transforms monolithic files by extracting shared modules (e.g., domain pricing and centralized API route tables). Any test failure triggers **RollbackGuard**, which immediately restores the original byte snapshot and deletes newly generated files.
 
 ---
 
-## 📊 Measured Benchmark Results
+## 📊 Measured Benchmark Evidence
 
-### Benchmark 1: VibeMart Monolith (E-Commerce)
-Measured by `npm run vibedebt:run -- fixtures/vibe-mart`:
+### Benchmark 1: VibeMart Monolith (Author-Constructed Fixture)
+An author-constructed e-commerce monolith consisting of **6 source files (8 fixture files total)** modeling real-world vibe-coded anti-patterns:
 
-| Metric | Before Refactor | After VibeDebt Refactor | Improvement |
-| :--- | :---: | :---: | :---: |
-| **Duplicated AST Expression Clusters** | 37 | **12** | **-67.6%** |
-| **Orphaned State / Dead Buffers** | 6 | **0** | **-100%** |
-| **API Path Inconsistencies** | 2 | **0** | **-100%** |
-| **Monolithic Component Lines (LOC)** | 1,812 | **1,576** | **-236 lines** |
-| **Verification Gate Pass Rate** | — | **122 / 122 (100%)** | **Zero Regressions** |
+| Metric | Before Refactor | After Refactor | Change | Notes |
+| :--- | :---: | :---: | :---: | :--- |
+| **Duplicated AST Expression Clusters** | 37 | **12** | -67.6% | *Clusters represent repeated AST expressions (including nested expressions); they are not 37 separate defects.* |
+| **Orphaned State / Dead Buffers** | 6 | **0** | -100% | *Purged dead buffers while retaining live input drafts.* |
+| **API Path Inconsistencies** | 2 | **0** | -100% | *Centralized `/api` vs `/api/v1` routes with backward-compatible aliases.* |
+| **Component Source Lines (LOC)** | 1,812 | **1,576** | -13.0% | *Extracted `src/domain/pricing.ts` and `src/services/apiRoutes.ts`.* |
+| **Gate Verification** | — | **122 / 122** | 100% Passed | *All 13 original fixture invariants + 109 synthesized anchor tests passed.* |
 
 ### Benchmark 2: RealWorld Conduit (`react-typescript-realworld-example-app`)
-Verified against the open-source RealWorld benchmark (commit `28e1e43`):
-- **Clean Extraction**: Extracted token authentication options from `user.service.ts` and `article.service.ts` into a clean shared module. All native gates and 6/6 browser Playwright journeys passed.
-- **Fault-Injection Test**: Intentionally changed `Token` to `Bearer`. The TypeScript compiler passed, but the behavioral anchors failed (4 failed, 2 passed). VibeDebt rejected the mutation and restored 100% of the original files byte-for-byte.
+To prove generalization beyond author-constructed fixtures, VibeDebt was tested against upstream commit `28e1e43` of the community RealWorld app:
+- **Precondition Disclosure**: Requires one pre-applied casing correction patch (`register-import-case.patch`, fixing `App.tsx`'s import of `Register` to match Git directory casing) before baseline anchor capture.
+- **Clean Extraction Run**: Extracted authorization header options from `user.service.ts` and `article.service.ts` into a dedicated helper module (`src/api/authorization-options.ts`). All native checks (`tsc`, `jest`) and all 6 Playwright browser journeys passed.
+- **Fault-Injection Test (Token ➔ Bearer)**: To verify that the anchors genuinely detect behavioral defects, the helper was mutated to emit `Bearer` instead of `Token`. The native TypeScript compiler passed, but the behavioral anchors failed (4 failed, 2 passed). VibeDebt rejected the mutation and restored the admitted source files byte-for-byte.
 
 ---
 
-## 🛡️ VibeDebt vs Alternatives
+## 🔬 Qualitative Tooling Comparison
 
-| Capability | Standard Linters (ESLint, Biome) | Raw AI Prompts ("Refactor this") | VibeDebt |
-| :--- | :---: | :---: | :---: |
-| **AST Duplicate Math Detection** | ❌ Formatting / Rules only | ⚠️ Inconsistent | ✅ **Subtree AST Clones** |
-| **Automatic Behavioral Test Synthesis** | ❌ No | ⚠️ Hallucinates tests | ✅ **Black-Box Anchors** |
-| **Architectural Module Extraction** | ❌ No | ⚠️ Introduces subtle bugs | ✅ **Domain-Layer Extraction** |
-| **Automated Rollback on Test Failure** | ❌ No | ❌ Manual git reset | ✅ **Byte-Level RollbackGuard** |
-| **Zero-Write Dry-Run Preview** | ⚠️ Limited | ❌ No | ✅ **Full In-Memory Diff** |
-| **Offline Execution ($0 API Cost)** | ✅ Yes | ❌ Requires API | ✅ **Fully Deterministic** |
-
----
-
-## 🌐 Architecture Observatory & Modern Web Design
-
-VibeDebt includes an offline-first **Architecture Observatory** (`vibedebt-dashboard.html`) designed using modern web standards:
-- **Fluid Responsive Typography**: Built with CSS `clamp()` and container queries for seamless viewing across 4K displays and mobile phones.
-- **Dark-Mode First Aesthetics**: Built on CSS custom properties with high-contrast coral/teal debt visualizers.
-- **Embedded Offline Mermaid Runtime**: Visualizes entity-level dependency graphs and call flows completely offline without external CDNs or network calls.
-- **Interactive Source Filter**: Instant client-side search across files, duplicate clusters, and state declarations.
-
-### Local Observatory Server
-Launch the local observatory with zero external dependencies:
-```sh
-npm run serve
-# Running at http://localhost:3000
-```
+| Capability | Duplication Linters (e.g. `jscpd`) | Dead Code Detectors (e.g. `knip`) | AST Codemods (`jscodeshift`, `ts-morph`) | VibeDebt |
+| :--- | :---: | :---: | :---: | :---: |
+| **Duplication Detection** | Token / text clones | ❌ None | ❌ None | **Normalized AST Subtree Clones** |
+| **Orphaned State Analysis** | ❌ None | Unused files/exports | ❌ None | **Scope Taint Analysis for React State** |
+| **Automated Test Synthesis** | ❌ None | ❌ None | ❌ None | **Black-Box Behavioral Anchors** |
+| **Refactoring Engine** | ❌ Detection only | ❌ Detection only | Scripted manual transforms | **Guided Module Extraction** |
+| **Transaction Rollback** | ❌ None | ❌ None | ❌ Manual `git checkout` | **Automated Byte-for-Byte RollbackGuard** |
+| **Dry-Run Diff Preview** | ❌ None | ❌ None | Diff output | **In-Memory Unified Diff Preview** |
 
 ---
 
-## ☁️ Deploy with Firebase App Hosting
+## ⚠️ Supported Transforms & Known Limitations
 
-VibeDebt is pre-configured for automated deployment via **Firebase App Hosting**:
-
-```text
-├── firebase.json       # App Hosting configuration
-└── apphosting.yaml     # Production CPU, concurrency & environment config
-```
-
-### 1-Click Deployment via Firebase CLI:
-```sh
-# Deploy directly from your machine
-npx -y firebase-tools@latest deploy
-```
-
-### Automated CI/CD via GitHub:
-Connect your repository in the [Firebase Console](https://console.firebase.google.com/) under **App Hosting** to enable automatic Git-push deployments on every commit to `main`.
+- **Supported Healer Transforms**: Currently extracts duplicate domain calculation bodies (e.g. tiered pricing, coupon calculations) and centralizes divergent REST API route declarations into dedicated services. On generic targets, supports conservative arrow-property header extractions.
+- **Fails Closed**: Unrecognized business logic shapes, complex dynamic meta-programming, or unhandled control flows abort cleanly with zero mutations to disk.
+- **No Global Equivalence Claim**: VibeDebt verifies that captured behavioral vectors continue to pass. It does not prove formal mathematical equivalence for unexercised paths.
+- **Local AST Intent**: Intent summaries are heuristic summaries generated by parsing AST function names and syntax branches. Optional LLM enrichment via `--ai` is advisory and never affects refactoring gates.
 
 ---
 
 ## 💻 CLI Commands Reference
 
-All commands support `--help`. Build first with `npm run build`:
+Build the executable first with `npm run build`:
 
 ```sh
-# Map: Generate topology & debt report
-node dist/cli/index.js map <targetDir> [--out <jsonPath>] [--html <htmlPath>] [--ai]
+# Map: Analyze source topology & detect code smells
+node dist/cli/index.js map <targetDir> [--out <jsonPath>] [--html [htmlPath]] [--ai]
 
-# Anchor: Synthesize behavioral characterization tests
+# Anchor: Synthesize black-box behavioral characterization tests
 node dist/cli/index.js anchor <targetDir> [--out <testPath>]
 
-# Heal: Perform structural refactoring with automatic rollback
+# Heal: Perform refactoring with automated rollback guard
 node dist/cli/index.js heal <targetDir> --anchor <testPath> [--dry-run] [--checkpoint]
 
-# Run: Execute full pipeline (map -> anchor -> heal -> report)
-node dist/cli/index.js run <targetDir> [--html <htmlPath>] [--dry-run] [--ai]
+# Run: Full end-to-end pipeline (map -> anchor -> heal -> report)
+node dist/cli/index.js run <targetDir> [--html [htmlPath]] [--dry-run] [--ai]
 ```
 
-### Optional AI Enrichment (Deterministic by Default)
-By default, VibeDebt runs 100% offline with zero API calls. If you wish to enrich domain summaries with an LLM, set any of the following environment variables:
-- `OPENROUTER_API_KEY`: Uses OpenRouter (`openrouter/free` by default)
-- `GEMINI_API_KEY`: Uses Google Gemini (`gemini-2.5-flash`)
-- `OPENAI_API_KEY`: Uses OpenAI (`gpt-4o-mini`)
+---
+
+## 🔒 Code Quality & Test Enforcement
+
+- **Strict File Modularity**: Every single file under `src/` is strictly under **250 lines of code**.
+- **Zero `any` Types**: 0 occurrences of explicit `any` types across the entire engine.
+- **Automated Verification**: Modularity and type hygiene are continuously asserted by `tests/code-quality.test.ts`.
+- **Test Suite Inventory**: **139 tests passed, 1 skipped** (POSIX file mode check on Windows, 140 total) across 19 test files.
+- **Hermetic Test Isolation**: Tests automatically reset fixtures before and after execution via Vitest `globalSetup`.
 
 ---
 
-## 🔒 Code Quality & Guarantees
+## 🤝 Contributing & Community
 
-- **Strict TypeScript**: 100% TypeScript 5.8 with `strict: true`.
-- **Zero `any` Types**: 0 occurrences of `any` across all 58 engine source modules.
-- **Strict Modularity**: Every source file in `src/` is strictly under **250 lines of code**.
-- **Complete Test Coverage**: 18 test suites, **139 passing tests** covering AST scanners, Playwright journeys, Git checkpointing, transaction rollback, and safety guards.
+We welcome contributions! Please review our community guides:
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Architecture map, "how to add a smell detector", and "how to add a transform" walkthroughs.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Contributor standards.
+- [SECURITY.md](SECURITY.md) — Vulnerability reporting policy.
+- [CHANGELOG.md](CHANGELOG.md) — Release notes and version history.
 
----
-
-## 🤝 Contributing
-
+Run the full verification suite locally:
 ```sh
-# Run full verification suite
 npm ci
-node scripts/reset-fixture.js
 npx tsc --noEmit
 npx vitest run
 ```
 
-All contributions must pass `npx tsc --noEmit` and `npx vitest run` with zero warnings or errors.
-
 ---
 
 <p align="center">
-  <strong>VibeDebt</strong> &mdash; <em>Untangle your architecture.</em><br>
+  <strong>VibeDebt</strong> &mdash; <em>A safety net for AI refactors.</em><br>
   Released under the <a href="LICENSE">MIT License</a>.
 </p>

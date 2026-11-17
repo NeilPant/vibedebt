@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "demo": "node scripts/demo.js",
     "start": "node scripts/serve-dashboard.js",
     "serve": "node scripts/serve-dashboard.js",
     "vibedebt:map": "npm run build --silent && node dist/cli/index.js map",
