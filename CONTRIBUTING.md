@@ -105,3 +105,14 @@ Run both gates locally before submitting your pull request:
 npx tsc --noEmit
 npx vitest run
 ```
+
+### 🌐 Browser Tests & Playwright
+
+Some end-to-end integration tests (`generic-browser.test.ts`, `generic-transaction.test.ts`) exercise browser journeys via Playwright.
+Install the Chromium browser locally with:
+```bash
+npx playwright install chromium
+# Or with system dependencies on Linux:
+npx playwright install --with-deps chromium
+```
+If Chromium is not installed, browser-dependent test suites automatically skip with an advisory message (`run npx playwright install chromium`) without failing your local run. Continuous Integration runs install Chromium and execute the complete suite.

@@ -1,4 +1,5 @@
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { hasChromium } from './helpers/browser.js';
 import { mkdtemp, mkdir, readFile, writeFile, rm, readdir, link } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname, basename } from 'node:path';
@@ -50,6 +51,7 @@ async function target(): Promise<TargetManifest> {
       }] },
   };
 }
+describe.skipIf(!hasChromium)('generic transaction boundary (run npx playwright install chromium)', () => {
 it('passes a real pure extraction against unchanged browser request anchors', async () => {
   const config = await target(), anchor = await captureTarget(config), frozen = JSON.stringify(anchor);
   const result = await healTarget(config, anchor);
@@ -197,3 +199,4 @@ it.each(['write', 'rename'] as const)('removes anchor output when cancellation i
     expect(process.listeners('SIGINT')).toEqual([...priorListeners]);
   } finally { spy.mockRestore(); syncBuiltinESMExports(); }
 }, 120000);
+});

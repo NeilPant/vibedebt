@@ -2,8 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { mkdtemp, mkdir, readFile, writeFile, rm, symlink, stat, chmod } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { createServer } from 'node:net';
+import { isAlive as alive } from '../src/generic/runtime/process-tree.js';
 
 const temporary: string[] = [];
 async function fixture() {
@@ -33,7 +34,6 @@ async function freePort() {
   await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   return address.port;
 }
-function alive(pid: number) { try { process.kill(pid, 0); return true; } catch { return false; } }
 
 describe('generic workspace recovery', () => {
   it('restores dirty binary ignored and untracked bytes and exact directory existence from a serialized snapshot', async () => {
@@ -149,6 +149,17 @@ describe('generic workspace recovery', () => {
 });
 
 describe('generic supervised processes', () => {
+  it('reports a terminated child or zombie process as not alive', async () => {
+    const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' });
+    const pid = child.pid!;
+    expect(pid).toBeGreaterThan(0);
+    expect(alive(pid)).toBe(true);
+    child.kill('SIGKILL');
+    const until = Date.now() + 5000;
+    while (alive(pid) && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 50));
+    expect(alive(pid)).toBe(false);
+  });
+
   it('retains exit status stdout and stderr from a real process', async () => {
     const api = await processes();
     const { root } = await fixture();

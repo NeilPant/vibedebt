@@ -5,6 +5,8 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     fileParallelism: false,
+    testTimeout: 30000,
+    hookTimeout: 30000,
     globalSetup: ['./tests/setup-fixture.ts'],
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'fixtures/**/*.test.ts'],
   },

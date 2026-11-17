@@ -1,6 +1,7 @@
 import { createServer, type Server } from 'node:http';
 import { getEventListeners } from 'node:events';
 import { afterEach, describe, expect, it } from 'vitest';
+import { hasChromium } from './helpers/browser.js';
 import { captureBrowser, replayBrowser } from '../src/generic/browser/index.js';
 import type { BrowserPlan } from '../src/generic/browser/types.js';
 
@@ -42,7 +43,7 @@ const plan: BrowserPlan = {
   ] }],
 };
 
-describe('generic browser boundary', () => {
+describe.skipIf(!hasChromium)('generic browser boundary (run npx playwright install chromium)', () => {
   it('captures real DOM and request observations and replays the frozen bundle across ports', async () => {
     const bundle = await captureBrowser(await app(), plan);
     expect(JSON.stringify(bundle)).toContain('Ada');

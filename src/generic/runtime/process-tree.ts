@@ -1,10 +1,26 @@
 import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 export function isAlive(pid: number): boolean {
-  try { process.kill(pid, 0); return true; } catch (error) {
+  try {
+    process.kill(pid, 0);
+  } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ESRCH') return false;
     throw error;
   }
+  if (process.platform === 'linux') {
+    try {
+      const stat = readFileSync(`/proc/${pid}/stat`, 'utf8');
+      const lastParen = stat.lastIndexOf(')');
+      if (lastParen !== -1) {
+        const state = stat.slice(lastParen + 1).trimStart().charAt(0);
+        if (state === 'Z') return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+  return true;
 }
 export const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
